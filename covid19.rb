@@ -71,9 +71,12 @@ CSV.foreach("COVID-19.csv") do |row|
 end
 #pp m
 m.each{|a|
-  print "#{a[0]},"
-  a[1].each {|i|
-    print "#{i},"
-  }
-  print "\n"
+  if (a[1][0] >= base_count)
+    print "#{a[0]},"
+    l = 0
+    a[1].each {|i|
+      print "#{i},"
+    }
+    print "\n"
+  end
 }
