@@ -33,6 +33,10 @@ CSV.foreach("COVID-19.csv") do |row|
 #  pp row
   pref = row[9]
   day = row[7]
+  status = row[15]
+  if (status == "退院" || status =~ /^死亡/)
+    next
+  end
   #
   if (last_day[pref] == nil)
     # 新規
