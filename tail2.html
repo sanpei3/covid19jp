@@ -1,0 +1,41 @@
+       };
+
+      var chart = new           google.visualization.LineChart(document.getElementById('chart_div'));
+//      google.visualization.events.addListener(chart, 'select', selectHandler);
+
+      chart.draw(data, options);
+    }
+   </script>
+<form>
+別のケース数を元にしたグラフに移る:
+<select onChange="top.location.href=value">
+<option value="#"></option>
+  <option value="covid19ja-1.html"  %%1%%>1</option>
+  <option value="covid19ja-10.html" %%10%%>10</option>
+  <option value="covid19ja-20.html" %%20%%>20</option>
+  <option value="covid19ja-30.html" %%30%%>30</option>
+  <option value="covid19ja-40.html" %%40%%>40</option>
+  <option value="covid19ja-50.html" %%50%%>50</option>
+  <option value="covid19ja-60.html" %%60%%>60</option>
+  <option value="covid19ja-70.html" %%70%%>70</option>
+  <option value="covid19ja-80.html" %%80%%>80</option>
+  <option value="covid19ja-90.html" %%90%%>90</option>
+  <option value="covid19ja-100.html" %%100%%>100</option>
+</select>
+番目のケースへ
+</form>
+<dl>
+
+<li> 本グラフの作成には<a href="https://www.ft.com/">Financial Times</a>作成の世界各国に対するグラフを参考にしました。
+<li> グラフ作成に利用しているデータソースは、<a href="https://gis.jag-japan.com/covid19jp/">ジャッグジャパン株式会社提供 COVID-19.csv</a>を利用しています。
+<li> 本ページの作成Ruby Scriptは<a href="https://github.com/sanpei3/covid19jp">GitHub</a>で公開しています。
+
+<dl>
+TODO
+<li>アクセス集中に対応するために、GitHib Pageなどに移動する
+<li>33%の日時増加線を追加する
+<li>英語版のページを作る
+<li>各都道府県の対数グラフでの線形近似線を追加する
+</html>
+
+
