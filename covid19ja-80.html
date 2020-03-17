@@ -1,0 +1,82 @@
+<head>
+</head>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="https://d3js.org/d3.v3.js"></script>
+
+  <div id="chart_div"></div>
+    <script type="text/javascript">
+
+google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.setOnLoadCallback(drawLineColors);
+
+function drawLineColors() {
+
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('number', 'X');	
+var pref =  ["愛知県", "北海道", "大阪府", "東京都", "兵庫県"];
+pref.forEach(function(t) {
+     data.addColumn('number', t);
+     data.addColumn({type:'string', role:'style'});
+});
+data.addRows([[0, 80, '', 80, '', 80, '', 84, '', 81, ''], [1, 85, '', 80, '', 89, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [2, 97, '', 87, '', 92, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [3, 102, '', 95, '', 102, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [4, 109, '', 98, '', 106, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [5, 112, '', 105, '', 108, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [6, 119, '', 108, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [7, 119, '', 115, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [8, 121, '', 125, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [9, 80, 'stroke-width: 0;', 134, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [10, 80, 'stroke-width: 0;', 141, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [11, 80, 'stroke-width: 0;', 145, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;'], [12, 80, 'stroke-width: 0;', 149, '', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;', 80, 'stroke-width: 0;']]);
+      var options = {
+//        title: 'cumulative number of cases, by number of days since 80th case'
+        title: '受診都道府県毎の80番目のケースからの日数による累積ケース数',
+        width: 700,
+        height: 700,
+
+        hAxis: {
+//          title: 'Number of days since 80th case',
+	    title: '80番目のケースからの日数',
+        },
+        vAxis: {
+//          title: 'Cumulative number of cases',
+	    title: '累積件数',
+	  logScale: true
+        },
+colors: ["Red", "Blue", "Green", "Black", "Cyan"]
+       };
+
+      var chart = new           google.visualization.LineChart(document.getElementById('chart_div'));
+//      google.visualization.events.addListener(chart, 'select', selectHandler);
+
+      chart.draw(data, options);
+    }
+   </script>
+<dl>
+(最終更新日時: 2020-03-17 18:30:02 +0900)
+<form>
+別のケース数を元にしたグラフに移る:
+<select onChange="top.location.href=value">
+<option value="#"></option>
+  <option value="covid19ja-1.html"  >1</option>
+  <option value="covid19ja-10.html" >10</option>
+  <option value="covid19ja-20.html" >20</option>
+  <option value="covid19ja-30.html" >30</option>
+  <option value="covid19ja-40.html" >40</option>
+  <option value="covid19ja-50.html" >50</option>
+  <option value="covid19ja-60.html" >60</option>
+  <option value="covid19ja-70.html" >70</option>
+  <option value="covid19ja-80.html" selected>80</option>
+  <option value="covid19ja-90.html" >90</option>
+  <option value="covid19ja-100.html" >100</option>
+</select>
+番目のケースへ
+</form>
+<dl>
+
+<li> 本グラフの作成には<a href="https://www.ft.com/">Financial Times</a>作成の世界各国に対するグラフを参考にしました。
+<li> グラフ作成に利用しているデータソースは、<a href="https://gis.jag-japan.com/covid19jp/">ジャッグジャパン株式会社提供 COVID-19.csv</a>を利用しています。
+<li> 本ページの作成Ruby Scriptは<a href="https://github.com/sanpei3/covid19jp">GitHub</a>で公開しています。
+
+<dl>
+TODO
+<li>アクセス集中に対応するために、GitHib Pageなどに移動する
+<li>33%の日時増加線を追加する
+<li>英語版のページを作る
+<li>各都道府県の対数グラフでの線形近似線を追加する
+</html>
+
+
