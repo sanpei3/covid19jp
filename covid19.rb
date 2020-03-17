@@ -8,7 +8,7 @@
 require 'csv'
 
 base_count = ARGV[0].to_i
-
+add_33percent_graph = ARGV[1].to_s
 #######################################################################
 def mmddyyyy2date(str)
   if (/(\d+)\/(\d+)\/(\d+)/ =~ str)
@@ -105,6 +105,27 @@ for i in 0..max_x do
   data.push(a)
 end
 
+select_str = []
+if (add_33percent_graph == "YES")
+  # create 33% DAILY INCREASE
+  select_str.push(["%%33%%", "-33"])
+  select_str.push(["%%33-SELECT%%", "selected"])
+  select_str.push(["%%33-NOT-SELECT%%", ""])
+  pref.push("33% DAILY INCREASE")
+  colors.push("LightGray")
+  y = base_count
+  for i in 0..max_x do
+    data[i].push(y)
+    data[i].push("''")
+    data[i].push("false")
+    y = y * 1.33
+  end
+else
+    select_str.push(["%%33%%", ""])
+    select_str.push(["%%33-SELECT%%", ""])
+    select_str.push(["%%33-NOT-SELECT%%", "selected"])
+end
+
 m.each{|a|
   if (a[1][0] >= base_count)
     x = 0
@@ -115,12 +136,13 @@ m.each{|a|
     a[1].each {|i|
       data[x].push(i)
       data[x].push("''")
+      data[x].push("true")
       x = x + 1
     }
     for i in x..max_x do
       data[x].push(base_count)
-#      data[x].push("'color: #FFFFFF'")
       data[x].push("'stroke-width: 0;'")
+      data[x].push("true")
       x = x + 1
     end
   end
@@ -128,7 +150,7 @@ m.each{|a|
 
 # グラフ作成
 base_values = [1,10,20,30,40,50,60,70,80,90,100]
-select_str = []
+select_str.push(["%%UPDATE%%", Time.now.to_s])
 base_values.each{|b|
   a = []
   a.push("%%#{b}%%")
@@ -150,11 +172,9 @@ readHtml("mid.html", [])
 data_str = "data.addRows(#{data});".gsub(/"/,"")
 puts data_str
 
-readHtml("tail.html", [['%%base_count%%', base_count.to_s],["%%UPDATE%%", Time.now.to_s]])
+readHtml("tail.html", [['%%base_count%%', base_count.to_s]])
 
 puts "colors: #{colors}"
 
 
 readHtml("tail2.html", select_str)
-
-

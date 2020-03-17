@@ -18,7 +18,7 @@ File.open(md5_filename,"r") do |mail|
 end
 #
 # 1. curl file
-system("curl -o #{csv_filename} #{source_url}")
+system("/usr/local/bin/curl -o #{csv_filename} #{source_url}")
 
 # 変化があったか確認
 csv = ""
@@ -34,13 +34,10 @@ if (md5_old != md5)
   #
   ENV['LANG'] = "ja_JP.UTF-8"
   base_values.each{ |i|
-    system("/usr/local/bin/ruby covid19.rb #{i} > covid19ja-#{i}.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} > contents/sanpei3.github.io/covid19jp-#{i}.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} YES > contents/sanpei3.github.io/covid19jp-#{i}-33.html")
   }
   File.open(md5_filename, "w") do |io|
     io.write md5
   end
 end
-
-# 現状は 20をデフォルトに
-
-# GitHubに送信
