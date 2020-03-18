@@ -1,0 +1,54 @@
+       };
+
+      var chart = new           google.visualization.LineChart(document.getElementById('chart_div'));
+//      google.visualization.events.addListener(chart, 'select', selectHandler);
+
+      chart.draw(data, options);
+    }
+   </script>
+<dl>
+(最終更新日時: %%UPDATE%%)
+<form>
+別のケース数を元にしたグラフに移る:
+<select onChange="top.location.href=value">
+<option value="#"></option>
+  <option value="covid19jp-1%%33%%.html" %%1%%>1</option>
+  <option value="covid19jp-10%%33%%.html" %%10%%>10</option>
+  <option value="covid19jp-20%%33%%.html" %%20%%>20</option>
+  <option value="covid19jp-30%%33%%.html" %%30%%>30</option>
+  <option value="covid19jp-40%%33%%.html" %%40%%>40</option>
+  <option value="covid19jp-50%%33%%.html" %%50%%>50</option>
+  <option value="covid19jp-60%%33%%.html" %%60%%>60</option>
+  <option value="covid19jp-70%%33%%.html" %%70%%>70</option>
+  <option value="covid19jp-80%%33%%.html" %%80%%>80</option>
+  <option value="covid19jp-90%%33%%.html" %%90%%>90</option>
+  <option value="covid19jp-100%%33%%.html" %%100%%>100</option>
+</select>
+番目のケースへ
+</form>
+<form>
+33%日次増加グラフ:
+<select onChange="top.location.href=value">
+<option value="#"></option>
+  <option value="covid19jp-%%base_count%%-33.html" %%33-SELECT%%>あり</option>
+  <option value="covid19jp-%%base_count%%.html" %%33-NOT-SELECT%%>なし</option>
+</select>
+</form>
+<dl>
+
+<li> 本グラフの作成には<a href="https://www.ft.com/">Financial Times</a>作成の世界各国に対するグラフを参考にしました。
+<li> グラフ作成に利用しているデータソースは、<a href="https://gis.jag-japan.com/covid19jp/">ジャッグジャパン株式会社提供 COVID-19.csv</a>を利用しています。
+<li> 本ページは、30分おきに上記CSVを自動取得して、変更があった場合のみ自動更新しています。
+<li> 本ページの作成Ruby Scriptは<a href="https://github.com/sanpei3/covid19jp">GitHub</a>で公開しています。
+<hr>
+質問・要望がありましたら、以下のTwitterアカウントにお願いします。
+<br>
+Twitter @yoshiro_mihira
+<br>
+GitHub  @sanpei3
+<br>
+e-mail sanpei@sanpei.org
+</html>
+
+
+
