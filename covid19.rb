@@ -4,6 +4,7 @@ require 'csv'
 
 base_count = ARGV[0].to_i
 add_33percent_graph = ARGV[1].to_s
+lang = ARGV[2].to_s
 #######################################################################
 def mmddyyyy2date(str)
   if (/(\d+)\/(\d+)\/(\d+)/ =~ str)
@@ -29,6 +30,54 @@ color_table = [ "Red", "Blue", "Green", "Black", "Cyan", "Orange", "Purple"]
 max_color_index = color_table.length
 color_index = 0
 
+pref_en = {"北海道": "Hokkaido",
+           "青森県": "Aomori",
+           "岩手県": "Iwate",
+           "宮城県": "Miyagi",
+           "秋田県": "Akita",
+           "山形県": "Yamagata",
+           "福島県": "Fukushima",
+           "茨城県": "Ibaraki",
+           "栃木県": "Tochigi",
+           "群馬県": "Gunma",
+           "埼玉県": "Saitama",
+           "千葉県": "Chiba",
+           "東京都": "Tokyo",
+           "神奈川県": "Kanagawa",
+           "新潟県": "Niigata",
+           "富山県": "Toyama",
+           "石川県": "Ishikawa",
+           "福井県": "Fukui",
+           "山梨県": "Yamanashi",
+           "長野県": "Nagano",
+           "岐阜県": "Gifu",
+           "静岡県": "Shizuoka",
+           "愛知県": "Aichi",
+           "三重県": "Mie",
+           "滋賀県": "Shiga",
+           "京都府": "Kyoto",
+           "大阪府": "Osaka",
+           "兵庫県": "Hyogo",
+           "奈良県": "Nara",
+           "和歌山県": "Wakayama",
+           "鳥取県": "Tottori",
+           "島根県": "Shimane",
+           "岡山県": "Okayama",
+           "広島県": "Hiroshima",
+           "山口県": "Yamaguchi",
+           "徳島県": "Tokushima",
+           "香川県": "Kagawa",
+           "愛媛県": "Ehime",
+           "高知県": "Kochi",
+           "福岡県": "Fukuoka",
+           "佐賀県": "Saga",
+           "長崎県": "Nagasaki",
+           "熊本県": "Kumamoto",
+           "大分県": "Oita",
+           "宮崎県": "Miyazaki",
+           "鹿児島県": "Kagoshima",
+           "沖縄県": "Okinawa",
+          }
 
 last_day = {}
 max_x = 0
@@ -89,6 +138,7 @@ end
 
 select_str = []
 replace_base_count = ['%%base_count%%', base_count.to_s]
+add_33percent_suffix = ["%%33%%", "-33"]
 select_str.push(replace_base_count)
 if (add_33percent_graph == "YES")
   # create 33% DAILY INCREASE
@@ -113,7 +163,11 @@ end
 m.each{|a|
   if (a[1][0] >= base_count)
     x = 0
-    pref.push(a[0])
+    if (lang == "-en")
+      pref.push(pref_en[:"#{a[0]}"])
+    else
+      pref.push(a[0])
+    end
     colors.push(color_table[color_index % max_color_index])
     color_index = color_index + 1
     l = 0
@@ -135,6 +189,7 @@ m.each{|a|
 # グラフ作成
 base_values = [1,10,20,30,40,50,60,70,80,90,100]
 select_str.push(["%%UPDATE%%", Time.now.to_s])
+select_str.push(add_33percent_suffix)
 base_values.each{|b|
   a = []
   a.push("%%#{b}%%")
@@ -147,7 +202,10 @@ base_values.each{|b|
   end
 }
 
-readHtml("header.html", [replace_base_count])
+header_str = []
+header_str.push(replace_base_count)
+header_str.push(add_33percent_suffix)
+readHtml("header#{lang}.html", header_str)
 
 puts "var pref =  #{pref};"
 
@@ -156,9 +214,9 @@ readHtml("mid.html", [])
 data_str = "data.addRows(#{data});".gsub(/"/,"")
 puts data_str
 
-readHtml("tail.html", [replace_base_count])
+readHtml("tail#{lang}.html", [replace_base_count])
 
 puts "colors: #{colors}"
 
 
-readHtml("tail2.html", select_str)
+readHtml("tail2#{lang}.html", select_str)
