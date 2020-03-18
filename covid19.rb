@@ -77,6 +77,7 @@ pref_en = {"北海道": "Hokkaido",
            "宮崎県": "Miyazaki",
            "鹿児島県": "Kagoshima",
            "沖縄県": "Okinawa",
+           "不明": "Unknown",
           }
 
 last_day = {}
@@ -145,14 +146,18 @@ if (add_33percent_graph == "YES")
   select_str.push(["%%33%%", "-33"])
   select_str.push(["%%33-SELECT%%", "selected"])
   select_str.push(["%%33-NOT-SELECT%%", ""])
-  pref.push("33% DAILY INCREASE")
+  if (lang == "-en")
+    pref.push("33% DAILY INCREASE")
+  else
+    pref.push("33%日次増加")
+  end
   colors.push("LightGray")
   y = base_count
   for i in 0..max_x do
     data[i].push(y)
     data[i].push("''")
     data[i].push("false")
-    y = y * 1.33
+    y = (y * 1.33).round
   end
 else
     select_str.push(["%%33%%", ""])

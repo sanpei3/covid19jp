@@ -36,6 +36,8 @@ if (md5_old != md5)
   base_values.each{ |i|
     system("/usr/local/bin/ruby covid19.rb #{i} > contents/sanpei3.github.io/covid19jp-#{i}.html")
     system("/usr/local/bin/ruby covid19.rb #{i} YES > contents/sanpei3.github.io/covid19jp-#{i}-33.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} NO -en > contents/sanpei3.github.io/covid19jp-#{i}-en.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} YES -en> contents/sanpei3.github.io/covid19jp-#{i}-33-en.html")
   }
   File.open(md5_filename, "w") do |io|
     io.write md5
