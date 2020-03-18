@@ -106,6 +106,7 @@ for i in 0..max_x do
 end
 
 select_str = []
+select_str.push(['%%base_count%%', base_count.to_s])
 if (add_33percent_graph == "YES")
   # create 33% DAILY INCREASE
   select_str.push(["%%33%%", "-33"])
