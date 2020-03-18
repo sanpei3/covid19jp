@@ -1,10 +1,5 @@
 # coding: utf-8
 
-#
-# 1. read csv
-# 2. 日毎、県ごとのを計算していく(base countまで入れておく)
-# 3. base countを超えたときから、配列をずらしていく
-
 require 'csv'
 
 base_count = ARGV[0].to_i
@@ -29,10 +24,6 @@ end
  
 
 #######################################################################
-#
-# matrix{県名}[0]
-# last_day{県名}
-# last_index{県名}
 
 color_table = [ "Red", "Blue", "Green", "Black", "Cyan", "Orange", "Purple"]
 max_color_index = color_table.length
@@ -49,14 +40,12 @@ CSV.foreach("COVID-19.csv") do |row|
     skip_header = nil
     next
   end
-#  pp row
   pref = row[9]
   day = row[7]
   status = row[15]
   if (status == "退院" || status =~ /^死亡/)
     next
   end
-  #
   if (last_day[pref] == nil)
     # 新規
     last_day[pref] = day
@@ -69,11 +58,6 @@ CSV.foreach("COVID-19.csv") do |row|
       # 基準以上になったらずらしていく
       # lastと引き算をする
       new_day = last_index[pref] + (mmddyyyy2date(day) - mmddyyyy2date(last_day[pref])).to_i
-      if (nil && pref == "東京都")
-        puts pref
-        puts day
-        puts new_day
-      end
       i = last_index[pref]
       while (new_day > i)
         m[pref][i] = m[pref][last_index[pref]]
@@ -86,7 +70,6 @@ CSV.foreach("COVID-19.csv") do |row|
       end
       last_day[pref] = day
     else
-      #
       m[pref][0] = m[pref][0] + 1
       last_day[pref] = day
     end
@@ -95,7 +78,6 @@ CSV.foreach("COVID-19.csv") do |row|
     m[pref][last_index[pref]] = m[pref][last_index[pref]] + 1
   end
 end
-#pp m
 pref = []
 colors =[]
 data = []
@@ -164,7 +146,6 @@ base_values.each{|b|
     select_str.push(a)
   end
 }
-
 
 readHtml("header.html", [replace_base_count])
 
