@@ -106,7 +106,8 @@ for i in 0..max_x do
 end
 
 select_str = []
-select_str.push(['%%base_count%%', base_count.to_s])
+replace_base_count = ['%%base_count%%', base_count.to_s]
+select_str.push(replace_base_count)
 if (add_33percent_graph == "YES")
   # create 33% DAILY INCREASE
   select_str.push(["%%33%%", "-33"])
@@ -164,7 +165,8 @@ base_values.each{|b|
   end
 }
 
-readHtml("header.html", [])
+
+readHtml("header.html", [replace_base_count])
 
 puts "var pref =  #{pref};"
 
@@ -173,7 +175,7 @@ readHtml("mid.html", [])
 data_str = "data.addRows(#{data});".gsub(/"/,"")
 puts data_str
 
-readHtml("tail.html", [['%%base_count%%', base_count.to_s]])
+readHtml("tail.html", [replace_base_count])
 
 puts "colors: #{colors}"
 
