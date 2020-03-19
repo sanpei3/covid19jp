@@ -140,10 +140,14 @@ end
 select_str = []
 replace_base_count = ['%%base_count%%', base_count.to_s]
 add_33percent_suffix = ["%%33%%", "-33"]
+remove_33percent_suffix = ["%%33%%", ""]
+header_str = []
+header_str.push(replace_base_count)
 select_str.push(replace_base_count)
 if (add_33percent_graph == "YES")
   # create 33% DAILY INCREASE
-  select_str.push(["%%33%%", "-33"])
+  header_str.push(add_33percent_suffix)
+  select_str.push(add_33percent_suffix)
   select_str.push(["%%33-SELECT%%", "selected"])
   select_str.push(["%%33-NOT-SELECT%%", ""])
   if (lang == "-en")
@@ -160,9 +164,10 @@ if (add_33percent_graph == "YES")
     y = (y * 1.33).round
   end
 else
-    select_str.push(["%%33%%", ""])
-    select_str.push(["%%33-SELECT%%", ""])
-    select_str.push(["%%33-NOT-SELECT%%", "selected"])
+  header_str.push(remove_33percent_suffix)
+  select_str.push(remove_33percent_suffix)
+  select_str.push(["%%33-SELECT%%", ""])
+  select_str.push(["%%33-NOT-SELECT%%", "selected"])
 end
 
 m.each{|a|
@@ -207,9 +212,6 @@ base_values.each{|b|
   end
 }
 
-header_str = []
-header_str.push(replace_base_count)
-header_str.push(add_33percent_suffix)
 readHtml("header#{lang}.html", header_str)
 
 puts "var pref =  #{pref};"
