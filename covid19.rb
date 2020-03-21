@@ -93,6 +93,10 @@ CSV.foreach("COVID-19.csv") do |row|
   pref = row[9]
   day = row[7]
   status = row[15]
+  status2 = row[16]
+  if (status2 =~ /帰国/)
+    next
+  end
   if (status == "退院" || status =~ /^死亡/)
     next
   end
@@ -158,10 +162,10 @@ if (add_33percent_graph == "YES")
   colors.push("LightGray")
   y = base_count
   for i in 0..max_x do
-    data[i].push(y)
+    data[i].push(y.round)
     data[i].push("''")
     data[i].push("false")
-    y = (y * 1.33).round
+    y = y * 1.33
   end
 else
   header_str.push(remove_33percent_suffix)
