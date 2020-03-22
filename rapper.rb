@@ -17,6 +17,8 @@ File.open(md5_filename,"r") do |mail|
   end
 end
 #
+sleep(rand(20))
+#
 # 1. curl file
 system("/usr/local/bin/curl -o #{csv_filename} #{source_url}")
 
@@ -34,10 +36,11 @@ if (md5_old != md5)
   #
   ENV['LANG'] = "ja_JP.UTF-8"
   base_values.each{ |i|
-    system("/usr/local/bin/ruby covid19.rb #{i} > contents/sanpei3.github.io/covid19jp-#{i}.html")
-    system("/usr/local/bin/ruby covid19.rb #{i} YES > contents/sanpei3.github.io/covid19jp-#{i}-33.html")
-    system("/usr/local/bin/ruby covid19.rb #{i} NO -en > contents/sanpei3.github.io/covid19jp-#{i}-en.html")
-    system("/usr/local/bin/ruby covid19.rb #{i} YES -en> contents/sanpei3.github.io/covid19jp-#{i}-33-en.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} NO -ja true > contents/sanpei3.github.io/covid19jp-#{i}.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} YES -ja true> contents/sanpei3.github.io/covid19jp-#{i}-33.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} NO -en true> contents/sanpei3.github.io/covid19jp-#{i}-en.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} YES -en true > contents/sanpei3.github.io/covid19jp-#{i}-33-en.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} NO -ja false > contents/sanpei3.github.io/covid19jp-#{i}-nolog.html")
   }
   File.open(md5_filename, "w") do |io|
     io.write md5
