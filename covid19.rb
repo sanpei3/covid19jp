@@ -5,6 +5,10 @@ require 'csv'
 base_count = ARGV[0].to_i
 add_33percent_graph = ARGV[1].to_s
 lang = ARGV[2].to_s
+if (lang != "-en")
+  lang = ""
+end
+yscale = ['%%yscale%%', ARGV[3].to_s]
 #######################################################################
 def mmddyyyy2date(str)
   if (/(\d+)\/(\d+)\/(\d+)/ =~ str)
@@ -147,6 +151,9 @@ add_33percent_suffix = ["%%33%%", "-33"]
 remove_33percent_suffix = ["%%33%%", ""]
 header_str = []
 header_str.push(replace_base_count)
+tail_str = []
+tail_str.push(replace_base_count)
+tail_str.push(yscale)
 select_str.push(replace_base_count)
 if (add_33percent_graph == "YES")
   # create 33% DAILY INCREASE
@@ -225,7 +232,7 @@ readHtml("mid.html", [])
 data_str = "data.addRows(#{data});".gsub(/"/,"")
 puts data_str
 
-readHtml("tail#{lang}.html", [replace_base_count])
+readHtml("tail#{lang}.html", tail_str)
 
 puts "colors: #{colors}"
 
