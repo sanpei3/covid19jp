@@ -34,7 +34,7 @@ md5 = Digest::MD5.new.update(csv).to_s
 if (md5_old != md5)
   
   #
-  ENV['LANG'] = "ja_JP.UTF-8"
+  #ENV['LANG'] = "ja_JP.UTF-8"
   base_values.each{ |i|
     system("/usr/local/bin/ruby covid19.rb #{i} NO -ja true > contents/sanpei3.github.io/covid19jp-#{i}.html")
     system("/usr/local/bin/ruby covid19.rb #{i} YES -ja true> contents/sanpei3.github.io/covid19jp-#{i}-33.html")

@@ -89,7 +89,7 @@ max_x = 0
 m = {}
 last_index = {}
 skip_header = true
-CSV.foreach("COVID-19.csv") do |row|
+CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
   if (skip_header)
     skip_header = nil
     next
