@@ -107,33 +107,35 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
   if (last_day[pref] == nil)
     # 新規
     last_day[pref] = day
-    m[pref] = [1]
+    m[pref] = [[1, day]]
     last_index[pref] = 0
     ############################################
   elsif (last_day[pref] != day)
     # 新しい
-    if (m[pref][0] >= base_count)
+    if (m[pref][0][0] >= base_count)
       # 基準以上になったらずらしていく
       # lastと引き算をする
       new_day = last_index[pref] + (mmddyyyy2date(day) - mmddyyyy2date(last_day[pref])).to_i
       i = last_index[pref]
       while (new_day > i)
-        m[pref][i] = m[pref][last_index[pref]]
+        m[pref][i] = [m[pref][last_index[pref]][0], last_day[pref]]
         i = i +1
       end
-      m[pref][new_day] = m[pref][last_index[pref]] + 1   # 日数分ずらして
+      m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, day]   # 日数分ずらして
       last_index[pref] = new_day
       if (max_x < new_day)
         max_x = new_day
       end
       last_day[pref] = day
     else
-      m[pref][0] = m[pref][0] + 1
+      m[pref][0] = [m[pref][0][0] + 1, day]
       last_day[pref] = day
     end
   else
     # 同じ日ならば、
-    m[pref][last_index[pref]] = m[pref][last_index[pref]] + 1
+    m[pref][last_index[pref]] =
+      [m[pref][last_index[pref]][0] + 1,
+                                 day]
   end
 end
 pref = []
@@ -172,6 +174,7 @@ if (add_33percent_graph == "YES")
     data[i].push(y.round)
     data[i].push("''")
     data[i].push("false")
+    data[i].push("''")
     y = y * 1.33
   end
 else
@@ -182,7 +185,7 @@ else
 end
 
 m.each{|a|
-  if (a[1][0] >= base_count)
+  if (a[1][0][0] >= base_count)
     x = 0
     if (lang == "-en")
       pref.push(pref_en[:"#{a[0]}"])
@@ -192,16 +195,23 @@ m.each{|a|
     colors.push(color_table[color_index % max_color_index])
     color_index = color_index + 1
     l = 0
-    a[1].each {|i|
+    a[1].each {|i, d|
       data[x].push(i)
       data[x].push("''")
       data[x].push("true")
+      if (lang == "-en")
+        p = pref_en[:"#{a[0]}"]
+      else
+        p = a[0]
+      end
+      data[x].push("'#{d}\n#{p}:#{i}'")
       x = x + 1
     }
     for i in x..max_x do
       data[x].push(base_count)
       data[x].push("'stroke-width: 0;'")
       data[x].push("true")
+      data[x].push("''")
       x = x + 1
     end
   end
