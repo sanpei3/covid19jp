@@ -16,6 +16,10 @@ def mmddyyyy2date(str)
   end
 end
 
+def date2mmdd(date)
+  return date.strftime("%m/%d")
+end
+
 def readHtml(filename, replace)
   File.open(filename, "r:UTF-8") do |body|
     body.each_line do |oneline|
@@ -96,6 +100,7 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
   end
   pref = row[9]
   day = row[7]
+  d = date2mmdd(mmddyyyy2date(day))
   status = row[15]
   status2 = row[16]
   if (status2 =~ /帰国/)
@@ -107,7 +112,7 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
   if (last_day[pref] == nil)
     # 新規
     last_day[pref] = day
-    m[pref] = [[1, day]]
+    m[pref] = [[1, "1:#{d}"]]
     last_index[pref] = 0
     ############################################
   elsif (last_day[pref] != day)
@@ -117,25 +122,27 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
       # lastと引き算をする
       new_day = last_index[pref] + (mmddyyyy2date(day) - mmddyyyy2date(last_day[pref])).to_i
       i = last_index[pref]
+      di = mmddyyyy2date(last_day[pref])
       while (new_day > i)
-        m[pref][i] = [m[pref][last_index[pref]][0], last_day[pref]]
+        m[pref][i] = [m[pref][last_index[pref]][0], "#{i}:#{date2mmdd(di)}"]
         i = i +1
+        di = di + 1
       end
-      m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, day]   # 日数分ずらして
+      m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{i}:#{d}"]   # 日数分ずらして
       last_index[pref] = new_day
       if (max_x < new_day)
         max_x = new_day
       end
       last_day[pref] = day
     else
-      m[pref][0] = [m[pref][0][0] + 1, day]
+      m[pref][0] = [m[pref][0][0] + 1, "1:#{d}"]
       last_day[pref] = day
     end
   else
     # 同じ日ならば、
     m[pref][last_index[pref]] =
       [m[pref][last_index[pref]][0] + 1,
-                                 day]
+       "#{last_index[pref]}:#{d}"]
   end
 end
 pref = []
