@@ -85,11 +85,13 @@ pref_en = {"北海道": "Hokkaido",
            "宮崎県": "Miyazaki",
            "鹿児島県": "Kagoshima",
            "沖縄県": "Okinawa",
+           "羽田空港": "Haneda Airport",
            "不明": "Unknown",
           }
 
 last_day = {}
 max_x = 0
+max_y = 0
 m = {}
 last_index = {}
 skip_header = true
@@ -113,6 +115,9 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
     # 新規
     last_day[pref] = day
     m[pref] = [[1, "1:#{d}"]]
+    if (max_y < 1)
+      max_y = 1
+    end
     last_index[pref] = 0
     ############################################
   elsif (last_day[pref] != day)
@@ -129,6 +134,9 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
         di = di + 1
       end
       m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{i}:#{d}"]   # 日数分ずらして
+      if (max_y < m[pref][last_index[pref]][0] + 1)
+        max_y = m[pref][last_index[pref]][0] + 1
+      end
       last_index[pref] = new_day
       if (max_x < new_day)
         max_x = new_day
@@ -136,6 +144,9 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
       last_day[pref] = day
     else
       m[pref][0] = [m[pref][0][0] + 1, "1:#{d}"]
+      if (max_y < m[pref][0][0] + 1)
+        max_y = m[pref][0][0] + 1
+      end
       last_day[pref] = day
     end
   else
@@ -143,8 +154,12 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
     m[pref][last_index[pref]] =
       [m[pref][last_index[pref]][0] + 1,
        "#{last_index[pref]}:#{d}"]
+    if (max_y < m[pref][last_index[pref]][0] + 1)
+      max_y = m[pref][last_index[pref]][0] + 1
+    end
   end
 end
+
 pref = []
 colors =[]
 data = []
@@ -164,6 +179,7 @@ tail_str = []
 tail_str.push(replace_base_count)
 tail_str.push(yscale)
 select_str.push(replace_base_count)
+max_y = 7000
 if (add_33percent_graph == "YES")
   # create 33% DAILY INCREASE
   header_str.push(add_33percent_suffix)
@@ -171,9 +187,94 @@ if (add_33percent_graph == "YES")
   select_str.push(["%%33-SELECT%%", "selected"])
   select_str.push(["%%33-NOT-SELECT%%", ""])
   if (lang == "-en")
-    pref.push("33% DAILY INCREASE")
+    pref.push("CASES DOUBLE _EVERY DAY")
   else
-    pref.push("33%日次増加")
+    pref.push("毎日2倍")
+  end
+  colors.push("LightGray")
+  y = base_count
+  for i in 0..max_x do
+    if (y < max_y)
+      data[i].push(y.round)
+      data[i].push("''")
+      data[i].push("false")
+      data[i].push("''")
+      data[i].push("''")
+      y = y * 2
+    else
+      data[i].push(y.round)
+      data[i].push("'stroke-width: 0;'")
+      data[i].push("true")
+      data[i].push("''")
+      if (i == max_x)
+        data[i].push("'CASES DOUBLE EVERY DAY'")
+      else
+        data[i].push("''")
+      end
+    end
+  end
+  if (lang == "-en")
+    pref.push("_EVERY 2DAYS")
+  else
+    pref.push("2日で2倍")
+  end
+  colors.push("LightGray")
+  y = base_count
+  for i in 0..max_x do
+    if (y < max_y)
+      data[i].push(y.round)
+      data[i].push("''")
+      data[i].push("false")
+      data[i].push("''")
+      data[i].push("''")
+      y = y * 1.41421356237309504880
+    else
+      data[i].push(y.round)
+      data[i].push("'stroke-width: 0;'")
+      data[i].push("true")
+      data[i].push("''")
+      if (i == max_x)
+        data[i].push("'CASES DOUBLE EVERY DAY'")
+      else
+        data[i].push("''")
+      end
+    end
+  end
+  if (lang == "-en")
+    pref.push("_EVERY 3DAYS")
+  else
+    pref.push("3日で2倍")
+  end
+  colors.push("LightGray")
+  y = base_count
+  for i in 0..max_x do
+    if (y < max_y)
+      data[i].push(y.round)
+      data[i].push("''")
+      data[i].push("false")
+      data[i].push("''")
+      if (i == max_x)
+        data[i].push("'_EVERY 3DAYS'")
+      else
+        data[i].push("''")
+      end
+      y = y * 1.2599210498
+    else
+      data[i].push(y.round)
+      data[i].push("'stroke-width: 0;'")
+      data[i].push("true")
+      data[i].push("''")
+      if (i == max_x)
+        data[i].push("'CASES DOUBLE EVERY DAY'")
+      else
+        data[i].push("''")
+      end
+    end
+  end
+  if (lang == "-en")
+    pref.push("_EVERY WEEK")
+  else
+    pref.push("一週間で2倍")
   end
   colors.push("LightGray")
   y = base_count
@@ -182,7 +283,12 @@ if (add_33percent_graph == "YES")
     data[i].push("''")
     data[i].push("false")
     data[i].push("''")
-    y = y * 1.33
+    if (i == max_x)
+      data[i].push("'_EVERY Week'")
+    else
+      data[i].push("''")
+    end
+    y = y * 1.1040895136738
   end
 else
   header_str.push(remove_33percent_suffix)
@@ -190,6 +296,8 @@ else
   select_str.push(["%%33-SELECT%%", ""])
   select_str.push(["%%33-NOT-SELECT%%", "selected"])
 end
+
+#################################
 
 m.each{|a|
   if (a[1][0][0] >= base_count)
@@ -212,12 +320,14 @@ m.each{|a|
         p = a[0]
       end
       data[x].push("'#{d}\n#{p}:#{i}'")
+      data[x].push("''")
       x = x + 1
     }
     for i in x..max_x do
       data[x].push(base_count)
       data[x].push("'stroke-width: 0;'")
       data[x].push("true")
+      data[x].push("''")
       data[x].push("''")
       x = x + 1
     end
