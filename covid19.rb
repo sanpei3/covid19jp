@@ -159,7 +159,45 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
     end
   end
 end
+###########################################################
 
+if (base_count == 150 && add_33percent_graph == "YES")
+  cssegis_header = []
+  countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom"]
+  countries.each{ |c|
+    pref_en.store(:"#{c}", c)
+  }
+  max_row = 0
+  CSV.foreach("./CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv", "r:UTF-8") do |row|
+    if (cssegis_header == [])
+      cssegis_header =row
+      max_row = row.length
+    end
+    country = row[1]
+    i = 4
+    d_i = 0
+    countries.each{ |c|
+      if(country == c && row[0] == nil)
+        m[c] = []
+        while (i <= max_row)
+          if (row[i].to_i >= base_count)
+            d = date2mmdd(mmddyyyy2date(cssegis_header[i]))
+            m[c][d_i] = [row[i].to_i, "#{d_i}:#{d}"]
+            d_i = d_i + 1
+            if (max_y < row[i].to_i)
+              max_y = row[i].to_i
+            end
+          end
+          i = i + 1
+        end
+      if (max_x < d_i)
+        max_x = d_i
+      end
+      end
+    }
+  end
+end
+###########################################################
 pref = []
 colors =[]
 data = []
@@ -179,7 +217,9 @@ tail_str = []
 tail_str.push(replace_base_count)
 tail_str.push(yscale)
 select_str.push(replace_base_count)
-max_y = 7000
+if (base_count != 150)
+  max_y = 7000
+end
 if (add_33percent_graph == "YES")
   # create 33% DAILY INCREASE
   header_str.push(add_33percent_suffix)
@@ -187,7 +227,7 @@ if (add_33percent_graph == "YES")
   select_str.push(["%%33-SELECT%%", "selected"])
   select_str.push(["%%33-NOT-SELECT%%", ""])
   if (lang == "-en")
-    pref.push("CASES DOUBLE _EVERY DAY")
+    pref.push("CASES DOUBLE EVERY DAY")
   else
     pref.push("毎日2倍")
   end
@@ -335,7 +375,7 @@ m.each{|a|
 }
 
 # グラフ作成
-base_values = [1,10,20,30,40,50,60,70,80,90,100]
+base_values = [1,10,20,30,40,50,60,70,80,90,100,150]
 select_str.push(["%%UPDATE%%", Time.now.to_s])
 select_str.push(add_33percent_suffix)
 base_values.each{|b|
