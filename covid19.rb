@@ -239,7 +239,7 @@ if (add_33percent_graph == "YES")
       data[i].push("''")
       data[i].push("false")
       data[i].push("''")
-      data[i].push("''")
+      data[i].push("null")
       y = y * 2
     else
       data[i].push(y.round)
@@ -247,9 +247,9 @@ if (add_33percent_graph == "YES")
       data[i].push("true")
       data[i].push("''")
       if (i == max_x)
-        data[i].push("'CASES DOUBLE EVERY DAY'")
+        data[i].push("null")
       else
-        data[i].push("''")
+        data[i].push("null")
       end
     end
   end
@@ -266,7 +266,7 @@ if (add_33percent_graph == "YES")
       data[i].push("''")
       data[i].push("false")
       data[i].push("''")
-      data[i].push("''")
+      data[i].push("null")
       y = y * 1.41421356237309504880
     else
       data[i].push(y.round)
@@ -274,9 +274,9 @@ if (add_33percent_graph == "YES")
       data[i].push("true")
       data[i].push("''")
       if (i == max_x)
-        data[i].push("'CASES DOUBLE EVERY DAY'")
+        data[i].push("null")
       else
-        data[i].push("''")
+        data[i].push("null")
       end
     end
   end
@@ -294,9 +294,9 @@ if (add_33percent_graph == "YES")
       data[i].push("false")
       data[i].push("''")
       if (i == max_x)
-        data[i].push("'_EVERY 3DAYS'")
+        data[i].push("null")
       else
-        data[i].push("''")
+        data[i].push("null")
       end
       y = y * 1.2599210498
     else
@@ -305,9 +305,9 @@ if (add_33percent_graph == "YES")
       data[i].push("true")
       data[i].push("''")
       if (i == max_x)
-        data[i].push("'CASES DOUBLE EVERY DAY'")
+        data[i].push("null")
       else
-        data[i].push("''")
+        data[i].push("null")
       end
     end
   end
@@ -324,9 +324,9 @@ if (add_33percent_graph == "YES")
     data[i].push("false")
     data[i].push("''")
     if (i == max_x)
-      data[i].push("'_EVERY Week'")
+      data[i].push("null")
     else
-      data[i].push("''")
+      data[i].push("null")
     end
     y = y * 1.1040895136738
   end
@@ -360,7 +360,18 @@ m.each{|a|
         p = a[0]
       end
       data[x].push("'#{d}\n#{p}:#{i}'")
-      data[x].push("''")
+      if ((a[0] == "United Kingdom" && d == "17:03/23")||
+          (a[0] == "Italy" && d == "17:03/11")||
+          (a[0] == "Spain" && d == "10:03/13")||
+          (a[0] == "Korea, South" && d == "30:03/22"))
+        data[x].push("'Lockdown'")
+      elsif (a[0] == "US" && d == "17:03/22")
+        data[x].push("'NY:Lockdown'")
+      elsif (a[0] == "US" && d == "12:03/17")
+        data[x].push("'Bay Area:Lockdown'")
+      else
+        data[x].push("null")
+      end
       x = x + 1
     }
     for i in x..max_x do
@@ -368,7 +379,7 @@ m.each{|a|
       data[x].push("'stroke-width: 0;'")
       data[x].push("true")
       data[x].push("''")
-      data[x].push("''")
+      data[x].push("null")
       x = x + 1
     end
   end
