@@ -44,7 +44,11 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
   if (last_day[pref] == nil)
     # 新規
     last_day[pref] = day
-    m[pref] = [[1, "1:#{d}"]]
+    if (lang == "-en")
+      m[pref] = [[1, "1st day:#{d}"]]
+    else
+      m[pref] = [[1, "1日目:#{d}"]]
+    end
     if (max_y < 1)
       max_y = 1
     end
@@ -59,11 +63,19 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
       i = last_index[pref]
       di = mmddyyyy2date(last_day[pref])
       while (new_day > i)
-        m[pref][i] = [m[pref][last_index[pref]][0], "#{i}:#{date2mmdd(di)}"]
+        if (lang == "-en")
+          m[pref][i] = [m[pref][last_index[pref]][0], "#{i}th day:#{date2mmdd(di)}"]
+        else
+          m[pref][i] = [m[pref][last_index[pref]][0], "#{i}日目:#{date2mmdd(di)}"]
+        end          
         i = i +1
         di = di + 1
       end
-      m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{i}:#{d}"]   # 日数分ずらして
+      if (lang == "-en")
+        m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{i}th day:#{d}"]   # 日数分ずらして
+      else
+        m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{i}日目:#{d}"]   # 日数分ずらして
+      end
       if (max_y < m[pref][last_index[pref]][0] + 1)
         max_y = m[pref][last_index[pref]][0] + 1
       end
@@ -73,7 +85,11 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
       end
       last_day[pref] = day
     else
-      m[pref][0] = [m[pref][0][0] + 1, "1:#{d}"]
+      if (lang == "-en")
+        m[pref][0] = [m[pref][0][0] + 1, "1st day:#{d}"]
+      else
+        m[pref][0] = [m[pref][0][0] + 1, "1日目:#{d}"]
+      end
       if (max_y < m[pref][0][0] + 1)
         max_y = m[pref][0][0] + 1
       end
@@ -112,7 +128,11 @@ if (base_count == 150 && add_33percent_graph == "YES")
         while (i <= max_row)
           if (row[i].to_i >= base_count)
             d = date2mmdd(mmddyyyy2date(cssegis_header[i]))
-            m[c][d_i] = [row[i].to_i, "#{d_i}:#{d}"]
+            if (lang == "-en")
+              m[c][d_i] = [row[i].to_i, "#{d_i}th day:#{d}"]
+            else
+              m[c][d_i] = [row[i].to_i, "#{d_i}日目:#{d}"]
+            end
             d_i = d_i + 1
             if (max_y < row[i].to_i)
               max_y = row[i].to_i
