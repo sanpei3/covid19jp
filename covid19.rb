@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require 'csv'
+require "./util.rb"
 
 base_count = ARGV[0].to_i
 add_33percent_graph = ARGV[1].to_s
@@ -9,28 +10,7 @@ if (lang != "-en")
   lang = ""
 end
 yscale = ['%%yscale%%', ARGV[3].to_s]
-#######################################################################
-def mmddyyyy2date(str)
-  if (/(\d+)\/(\d+)\/(\d+)/ =~ str)
-    return Date.new($3.to_i, $1.to_i, $2.to_i)
-  end
-end
 
-def date2mmdd(date)
-  return date.strftime("%m/%d")
-end
-
-def readHtml(filename, replace)
-  File.open(filename, "r:UTF-8") do |body|
-    body.each_line do |oneline|
-      replace.each do |str, replace|
-        oneline = oneline.gsub(/#{str}/, replace)
-      end
-      puts oneline
-    end
-  end
-end
- 
 
 #######################################################################
 
@@ -38,56 +18,6 @@ color_table = [ "Red", "Blue", "Green", "Black", "Cyan", "Orange", "Purple"]
 max_color_index = color_table.length
 color_index = 0
 
-pref_en = {"北海道": "Hokkaido",
-           "青森県": "Aomori",
-           "岩手県": "Iwate",
-           "宮城県": "Miyagi",
-           "秋田県": "Akita",
-           "山形県": "Yamagata",
-           "福島県": "Fukushima",
-           "茨城県": "Ibaraki",
-           "栃木県": "Tochigi",
-           "群馬県": "Gunma",
-           "埼玉県": "Saitama",
-           "千葉県": "Chiba",
-           "東京都": "Tokyo",
-           "神奈川県": "Kanagawa",
-           "新潟県": "Niigata",
-           "富山県": "Toyama",
-           "石川県": "Ishikawa",
-           "福井県": "Fukui",
-           "山梨県": "Yamanashi",
-           "長野県": "Nagano",
-           "岐阜県": "Gifu",
-           "静岡県": "Shizuoka",
-           "愛知県": "Aichi",
-           "三重県": "Mie",
-           "滋賀県": "Shiga",
-           "京都府": "Kyoto",
-           "大阪府": "Osaka",
-           "兵庫県": "Hyogo",
-           "奈良県": "Nara",
-           "和歌山県": "Wakayama",
-           "鳥取県": "Tottori",
-           "島根県": "Shimane",
-           "岡山県": "Okayama",
-           "広島県": "Hiroshima",
-           "山口県": "Yamaguchi",
-           "徳島県": "Tokushima",
-           "香川県": "Kagawa",
-           "愛媛県": "Ehime",
-           "高知県": "Kochi",
-           "福岡県": "Fukuoka",
-           "佐賀県": "Saga",
-           "長崎県": "Nagasaki",
-           "熊本県": "Kumamoto",
-           "大分県": "Oita",
-           "宮崎県": "Miyazaki",
-           "鹿児島県": "Kagoshima",
-           "沖縄県": "Okinawa",
-           "羽田空港": "Haneda Airport",
-           "不明": "Unknown",
-          }
 
 last_day = {}
 max_x = 0
@@ -165,7 +95,7 @@ if (base_count == 150 && add_33percent_graph == "YES")
   cssegis_header = []
   countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom"]
   countries.each{ |c|
-    pref_en.store(:"#{c}", c)
+    $pref_en.store(:"#{c}", c)
   }
   max_row = 0
   CSV.foreach("./CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv", "r:UTF-8") do |row|
@@ -343,7 +273,7 @@ m.each{|a|
   if (a[1][0][0] >= base_count)
     x = 0
     if (lang == "-en")
-      pref.push(pref_en[:"#{a[0]}"])
+      pref.push($pref_en[:"#{a[0]}"])
     else
       pref.push(a[0])
     end
@@ -355,19 +285,19 @@ m.each{|a|
       data[x].push("''")
       data[x].push("true")
       if (lang == "-en")
-        p = pref_en[:"#{a[0]}"]
+        p = $pref_en[:"#{a[0]}"]
       else
         p = a[0]
       end
       data[x].push("'#{d}\n#{p}:#{i}'")
-      if ((a[0] == "United Kingdom" && d =~ /03\/23/)||
-          (a[0] == "Italy" && d =~ /03\/11/)||
-          (a[0] == "Spain" && d =~ /03\/13/)||
-          (a[0] == "Korea, South" && d =~ /03\/22/))
+      if ((a[0] == "United Kingdom" && d =~ /XX03\/23/)||
+          (a[0] == "Italy" && d =~ /XX03\/11/)||
+          (a[0] == "Spain" && d =~ /XX03\/13/)||
+          (a[0] == "Korea, South" && d =~ /XX03\/22/))
         data[x].push("'Lockdown'")
-      elsif (a[0] == "US" && d =~ /03\/22/)
+      elsif (a[0] == "US" && d =~ /XX03\/22/)
         data[x].push("'NY:PAUSE'")
-      elsif (a[0] == "US" && d =~ /03\/17/)
+      elsif (a[0] == "US" && d =~ /XX03\/17/)
         data[x].push("'Bay Area:shelterInPlace'")
       else
         data[x].push("null")
