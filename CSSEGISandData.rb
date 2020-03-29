@@ -344,11 +344,15 @@ m.each{|a|
         if (p == "New York,US" && d =~ /03\/22/)
           data[x].push("'PAUSE'")
         elsif (p == "California,US" && d =~ /03\/17/)
-          data[x].push("'Bay Area:shelterInPlace'")
+          data[x].push("'Bay Area:shelter in place'")
         elsif (p == "California,US" && d =~ /03\/19/)
-          data[x].push("'California:shelterInPlace'")
+          data[x].push("'California:shelter in place'")
         elsif (p == "Minnesota,US" && d =~ /03\/27/)
-          data[x].push("'Stay home except for essential needs'")
+          data[x].push("'Stay home'")
+          #data[x].push("'Stay home except for essential needs'")
+        elsif (p == "Tokyo" && d =~ /03\/28/)
+          data[x].push("'stay at home'")
+          #data[x].push("'stay at home and refrain from going outside'")
         else
           data[x].push("null")
         end
