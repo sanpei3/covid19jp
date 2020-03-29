@@ -4,6 +4,10 @@ require 'csv'
 require "./util.rb"
 
 base_count = 150
+lang = "-en"
+if (lang != "-en")
+  lang = ""
+end
 
 dir_name = "CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports/"
 
@@ -14,7 +18,7 @@ states = [
   ["California", "US"]
 ]
 states.each{ |c, s|
-  $pref_en.store(:"#{c},#{s}", c)
+  $pref_en.store(:"#{c},#{s}", "#{c},#{s}")
 }
 
 # not used
@@ -187,10 +191,6 @@ color_index = 0
 pref = []
 colors =[]
 
-lang = "-en"
-if (lang != "-en")
-  lang = ""
-end
 select_str = []
 header_str = []
 add_33percent_suffix = ["%%33%%", "-33"]
@@ -325,7 +325,11 @@ m.each{|a|
     color_index = color_index + 1
     l = 0
     a[1].each {|i, d|
-      p = a[0]
+      if (lang == "-en")
+        p = $pref_en[:"#{a[0]}"]
+      else
+        p = a[0]
+      end
       if (i == 0)
         data[x].push(base_count)
         data[x].push("'stroke-width: 0;'")
