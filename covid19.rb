@@ -360,15 +360,15 @@ m.each{|a|
         p = a[0]
       end
       data[x].push("'#{d}\n#{p}:#{i}'")
-      if ((a[0] == "United Kingdom" && d == "17:03/23")||
-          (a[0] == "Italy" && d == "17:03/11")||
-          (a[0] == "Spain" && d == "10:03/13")||
-          (a[0] == "Korea, South" && d == "30:03/22"))
+      if ((a[0] == "United Kingdom" && d =~ /03\/23/)||
+          (a[0] == "Italy" && d =~ /03\/11/)||
+          (a[0] == "Spain" && d =~ /03\/13/)||
+          (a[0] == "Korea, South" && d =~ /03\/22/))
         data[x].push("'Lockdown'")
-      elsif (a[0] == "US" && d == "17:03/22")
-        data[x].push("'NY:Lockdown'")
-      elsif (a[0] == "US" && d == "12:03/17")
-        data[x].push("'Bay Area:Lockdown'")
+      elsif (a[0] == "US" && d =~ /03\/22/)
+        data[x].push("'NY:PAUSE'")
+      elsif (a[0] == "US" && d =~ /03\/17/)
+        data[x].push("'Bay Area:shelterInPlace'")
       else
         data[x].push("null")
       end
