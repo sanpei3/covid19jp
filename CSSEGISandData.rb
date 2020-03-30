@@ -3,7 +3,7 @@
 require 'csv'
 require "./util"
 
-base_count = 150
+base_count = ARGV[0].to_i
 lang = "-en"
 if (lang != "-en")
   lang = ""
@@ -353,7 +353,7 @@ m.each{|a|
         elsif (p == "Minnesota,US" && d =~ /03\/27/)
           data[x].push("'Stay home'")
           #data[x].push("'Stay home except for essential needs'")
-        elsif (p == "Tokyo" && d =~ /03\/28/)
+        elsif (p == "Tokyo" && d =~ /XX03\/28/)
           data[x].push("'stay at home'")
           #data[x].push("'stay at home and refrain from going outside'")
         else
