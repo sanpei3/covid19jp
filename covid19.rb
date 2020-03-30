@@ -11,7 +11,12 @@ if (lang != "-en")
 end
 yscale = ['%%yscale%%', ARGV[3].to_s]
 
-
+world_wide = ARGV[4].to_s
+if (world_wide == "WW")
+  world_wide = "-ww"
+else
+  world_wide = ""
+end
 #######################################################################
 
 color_table = [ "Red", "Blue", "Green", "Black", "Cyan", "Orange", "Purple"]
@@ -110,7 +115,7 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
 end
 ###########################################################
 
-if (base_count == 150 && add_33percent_graph == "YES")
+if (world_wide == "-ww" && add_33percent_graph == "YES")
   cssegis_header = []
   countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom"]
   countries.each{ |c|
@@ -339,7 +344,11 @@ m.each{|a|
 }
 
 # グラフ作成
-base_values = [1,10,20,30,40,50,60,70,80,90,100,150]
+if (world_wide == "-ww")
+  base_values = [100,150]
+else
+  base_values = [1,10,20,30,40,50,60,70,80,90,100,150]
+end
 select_str.push(["%%UPDATE%%", Time.now.to_s])
 select_str.push(add_33percent_suffix)
 base_values.each{|b|
@@ -354,7 +363,7 @@ base_values.each{|b|
   end
 }
 
-readHtml("header#{lang}.html", header_str)
+readHtml("header#{lang}#{world_wide}.html", header_str)
 
 puts "var pref =  #{pref};"
 
@@ -363,9 +372,9 @@ readHtml("mid.html", [])
 data_str = "data.addRows(#{data});".gsub(/"/,"")
 puts data_str
 
-readHtml("tail#{lang}.html", tail_str)
+readHtml("tail#{lang}#{world_wide}.html", tail_str)
 
 puts "colors: #{colors}"
 
 
-readHtml("tail2#{lang}.html", select_str)
+readHtml("tail2#{lang}#{world_wide}.html", select_str)
