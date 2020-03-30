@@ -1,7 +1,14 @@
 # coding: utf-8
+
 def mmddyyyy2date(str)
-  if (/(\d+)\/(\d+)\/(\d+)/ =~ str)
-    return Date.new($3.to_i, $1.to_i, $2.to_i)
+  if (str =~ /^\d\d\d\d\//)
+    if (/(\d+)\/(\d+)\/(\d+)/ =~ str)
+    return Date.new($1.to_i, $2.to_i, $3.to_i)
+    end
+  else
+    if (/(\d+)\/(\d+)\/(\d+)/ =~ str)
+      return Date.new($3.to_i, $1.to_i, $2.to_i)
+    end
   end
 end
 

@@ -1,7 +1,7 @@
 # coding: utf-8
 
 require 'csv'
-require "./util.rb"
+require "./util"
 
 base_count = 150
 lang = "-en"
@@ -117,6 +117,9 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
     next
   end
   pref = row[9]
+  if (row[7] == nil)
+    next
+  end
   day = row[7]
   d = date2mmdd(mmddyyyy2date(day))
   status = row[15]

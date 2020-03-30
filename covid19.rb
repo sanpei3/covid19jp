@@ -1,7 +1,7 @@
 # coding: utf-8
 
 require 'csv'
-require "./util.rb"
+require "./util"
 
 base_count = ARGV[0].to_i
 add_33percent_graph = ARGV[1].to_s
@@ -32,6 +32,9 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
   end
   pref = row[9]
   day = row[7]
+  if (day == nil)
+    next
+  end
   d = date2mmdd(mmddyyyy2date(day))
   status = row[15]
   status2 = row[16]
