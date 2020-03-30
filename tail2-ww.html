@@ -1,0 +1,37 @@
+       };
+
+      var chart = new           google.visualization.LineChart(document.getElementById('chart_div'));
+//      google.visualization.events.addListener(chart, 'select', selectHandler);
+
+      chart.draw(data, options);
+    }
+   </script>
+<dl>
+(最終更新日時: %%UPDATE%%)
+<form>
+別のケース数を元にしたグラフに移る:
+<select onChange="top.location.href=value">
+<option value="#"></option>
+  <option value="covid19jp-100-WW-ja.html" %%100%%>100</option>
+  <option value="covid19jp-150-WW-ja.html" %%150%%>150</option>
+</select>
+番目のケースへ
+</form>
+<dl>
+
+<li> 本グラフの作成には<a href="https://www.ft.com/coronavirus-latest">Financial Times</a>作成の世界各国に対するグラフを参考にしました。
+<li> グラフ作成に利用しているデータソースは、日本国内については<a href="https://gis.jag-japan.com/covid19jp/">ジャッグジャパン株式会社提供 COVID-19.csv</a>を利用しています。海外については<a href="https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series">CSSE at Johns Hopkins University</a>を利用しています。
+<li> 本ページは、30分おきに上記CSVを自動取得して、変更があった場合のみ自動更新しています。
+<li> 本ページの作成Ruby Scriptは<a href="https://github.com/sanpei3/covid19jp">GitHub</a>で公開しています。
+<hr>
+質問・要望がありましたら、以下のTwitterアカウントにお願いします。
+<br>
+Twitter @yoshiro_mihira
+<br>
+GitHub  sanpei3
+<br>
+e-mail sanpei@sanpei.org
+</html>
+
+
+

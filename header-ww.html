@@ -2,15 +2,14 @@
 <meta http-equiv="Refresh" content="1800">
 <meta charSet="utf-8"/>
 <title>
-COVID-19: Cumulative number of cases in Japan by number of days since %%base_count%%th case
+新型コロナウイルス受診都道府県毎と主要国の%%base_count%%番目のケースからの日数による累積ケース数(片対数グラフ)
 </title>
+&lt;JA |
+<a href="covid19jp-%%base_count%%-WW-en.html">EN</a>&gt;
 
-&lt;<a href="covid19jp-%%base_count%%%%33%%.html">JA</a> |
-EN&gt;
-
-&lt;Only Japan pref |
-<a href="covid19jp-150-WW-en.html">with foreign countries</a> |
-<a href="covid19jp-150-US-en.html">with US status</a> &gt;
+&lt;<a href="covid19jp-%%base_count%%.html">都道府県のみ</a> |
+主要国と都道府県 |
+<a href="covid19jp-150-US-ja.html">アメリカ主要州と都道府県</a> &gt;
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript" src="https://d3js.org/d3.v3.js"></script>
@@ -22,5 +21,7 @@ google.charts.load('current', {packages: ['corechart', 'line']});
 google.charts.setOnLoadCallback(drawLineColors);
 
 function drawLineColors() {
+
+
       var data = new google.visualization.DataTable();
       data.addColumn('number', 'X');	
