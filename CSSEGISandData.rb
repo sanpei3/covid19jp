@@ -15,7 +15,8 @@ dir_name = "CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_daily_repor
 states = [
   ["Minnesota", "US"],
   ["New York", "US"],
-  ["California", "US"]
+  ["California", "US"],
+  ["Washington", "US"]
 ]
 states.each{ |c, s|
   $pref_en.store(:"#{c},#{s}", "#{c},#{s}")
@@ -95,7 +96,7 @@ Dir::foreach(dir_name) do |filename|
         else
           last_day[m_index] = last_day[m_index] + 1
         end
-        d_index = last_day[m_index] + 1
+        d_index = index2days(last_day[m_index] + 1, lang)
         g = [confirmed, "#{d_index}:#{d}"]
         m[m_index][last_day[m_index]] = g
         if (max_x < last_day[m_index])
@@ -133,7 +134,8 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
   if (last_day[pref] == nil)
     # 新規
     last_day[pref] = day
-    m[pref] = [[1, "1:#{d}"]]
+    d_index = index2days(0, lang)
+    m[pref] = [[1, "#{d_index}:#{d}"]]
     if (max_y < 1)
       max_y = 1
     end
@@ -148,11 +150,13 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
       i = last_index[pref]
       di = mmddyyyy2date(last_day[pref])
       while (new_day > i)
-        m[pref][i] = [m[pref][last_index[pref]][0], "#{i}:#{date2mmdd(di)}"]
+        d_index = index2days(i, lang)
+        m[pref][i] = [m[pref][last_index[pref]][0], "#{d_index}:#{date2mmdd(di)}"]
         i = i +1
         di = di + 1
       end
-      m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{i}:#{d}"]   # 日数分ずらして
+      d_index = index2days(i, lang)
+      m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{d_index}:#{d}"]   # 日数分ずらして
       if (max_y < m[pref][last_index[pref]][0] + 1)
         max_y = m[pref][last_index[pref]][0] + 1
       end
@@ -162,7 +166,8 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
       end
       last_day[pref] = day
     else
-      m[pref][0] = [m[pref][0][0] + 1, "1:#{d}"]
+      d_index = index2days(1, lang)
+      m[pref][0] = [m[pref][0][0] + 1, "#{d_index}:#{d}"]
       if (max_y < m[pref][0][0] + 1)
         max_y = m[pref][0][0] + 1
       end
@@ -170,9 +175,10 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
     end
   else
     # 同じ日ならば、
+    d_index = index2days(last_index[pref], lang)
     m[pref][last_index[pref]] =
       [m[pref][last_index[pref]][0] + 1,
-       "#{last_index[pref]}:#{d}"]
+       "#{d_index}:#{d}"]
     if (max_y < m[pref][last_index[pref]][0] + 1)
       max_y = m[pref][last_index[pref]][0] + 1
     end
@@ -187,8 +193,7 @@ for i in 0..max_x do
   data.push(a)
 end
 
-color_table = [ "Red", "Blue", "Green", "Black", "Cyan", "Orange", "Purple"]
-max_color_index = color_table.length
+max_color_index = $color_table.length
 color_index = 0
 
 pref = []
@@ -324,8 +329,12 @@ m.each{|a|
     else
       pref.push(a[0])
     end
-    colors.push(color_table[color_index % max_color_index])
-    color_index = color_index + 1
+    if (a[0] == "東京都")
+      colors.push("Red")
+    else
+      colors.push($color_table[color_index % max_color_index])
+      color_index = color_index + 1
+    end
     l = 0
     a[1].each {|i, d|
       if (lang == "-en")
@@ -353,6 +362,8 @@ m.each{|a|
         elsif (p == "Minnesota,US" && d =~ /03\/27/)
           data[x].push("'Stay home'")
           #data[x].push("'Stay home except for essential needs'")
+        elsif (p == "Washington,US" && d =~ /03\/23/)
+          data[x].push("'Stay home, Stay Healthy'")
         elsif (p == "Tokyo" && d =~ /XX03\/28/)
           data[x].push("'stay at home'")
           #data[x].push("'stay at home and refrain from going outside'")
