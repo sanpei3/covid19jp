@@ -19,8 +19,7 @@ else
 end
 #######################################################################
 
-color_table = [ "Red", "Blue", "Green", "Black", "Cyan", "Orange", "Purple"]
-max_color_index = color_table.length
+max_color_index = $color_table.length
 color_index = 0
 
 
@@ -53,9 +52,9 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
     # 新規
     last_day[pref] = day
     if (lang == "-en")
-      m[pref] = [[1, "1st day:#{d}"]]
+      m[pref] = [[1, "0 day:#{d}"]]
     else
-      m[pref] = [[1, "1日目:#{d}"]]
+      m[pref] = [[1, "0日目:#{d}"]]
     end
     if (max_y < 1)
       max_y = 1
@@ -71,19 +70,13 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
       i = last_index[pref]
       di = mmddyyyy2date(last_day[pref])
       while (new_day > i)
-        if (lang == "-en")
-          m[pref][i] = [m[pref][last_index[pref]][0], "#{i}th day:#{date2mmdd(di)}"]
-        else
-          m[pref][i] = [m[pref][last_index[pref]][0], "#{i}日目:#{date2mmdd(di)}"]
-        end          
+        d_index = index2days(last_index[pref], lang)
+        m[pref][i] = [m[pref][last_index[pref]][0], "#{d_index}:#{date2mmdd(di)}"]
         i = i +1
         di = di + 1
       end
-      if (lang == "-en")
-        m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{i}th day:#{d}"]   # 日数分ずらして
-      else
-        m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{i}日目:#{d}"]   # 日数分ずらして
-      end
+      d_index = index2days(last_index[pref], lang)
+      m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{d_index}:#{d}"]   # 日数分ずらして
       if (max_y < m[pref][last_index[pref]][0] + 1)
         max_y = m[pref][last_index[pref]][0] + 1
       end
@@ -94,9 +87,9 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
       last_day[pref] = day
     else
       if (lang == "-en")
-        m[pref][0] = [m[pref][0][0] + 1, "1st day:#{d}"]
+        m[pref][0] = [m[pref][0][0] + 1, "0 day:#{d}"]
       else
-        m[pref][0] = [m[pref][0][0] + 1, "1日目:#{d}"]
+        m[pref][0] = [m[pref][0][0] + 1, "0日目:#{d}"]
       end
       if (max_y < m[pref][0][0] + 1)
         max_y = m[pref][0][0] + 1
@@ -105,9 +98,10 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
     end
   else
     # 同じ日ならば、
+    d_index = index2days(last_index[pref], lang)
     m[pref][last_index[pref]] =
       [m[pref][last_index[pref]][0] + 1,
-       "#{last_index[pref]}:#{d}"]
+       "#{d_index}:#{d}"]
     if (max_y < m[pref][last_index[pref]][0] + 1)
       max_y = m[pref][last_index[pref]][0] + 1
     end
@@ -117,7 +111,7 @@ end
 
 if (world_wide == "-ww" && add_33percent_graph == "YES")
   cssegis_header = []
-  countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom"]
+  countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom", "India", "Serbia", "Germany"]
   countries.each{ |c|
     $pref_en.store(:"#{c}", c)
   }
@@ -136,11 +130,8 @@ if (world_wide == "-ww" && add_33percent_graph == "YES")
         while (i <= max_row)
           if (row[i].to_i >= base_count)
             d = date2mmdd(mmddyyyy2date(cssegis_header[i]))
-            if (lang == "-en")
-              m[c][d_i] = [row[i].to_i, "#{d_i}th day:#{d}"]
-            else
-              m[c][d_i] = [row[i].to_i, "#{d_i}日目:#{d}"]
-            end
+            d_index = index2days(d_i, lang)
+            m[c][d_i] = [row[i].to_i, "#{d_index}:#{d}"]
             d_i = d_i + 1
             if (max_y < row[i].to_i)
               max_y = row[i].to_i
@@ -155,6 +146,58 @@ if (world_wide == "-ww" && add_33percent_graph == "YES")
     }
   end
 end
+###########################################################
+tmax = []
+tavg =[]
+start = 0
+m["東京都"].each { | i, s|
+  tmax.push([ i, s])
+  tavg.push([ i, s])
+  if (s =~ /(\d*).*:03\/29/)
+    start = $1.to_i
+  end
+}
+start = start + 1
+
+a = tmax[start][0]  # y= a*x^{day}
+a=430
+x = 1.047456318
+xx = 1.105547511
+
+y = a * x
+yy = a * xx
+d = mmddyyyy2date("2020/03/30")
+for i in start..(14+start)
+  dd = date2mmdd(d)
+  ii = index2days(i, lang)
+  tavg[i] = [y.round, "#{ii}:#{dd}"]
+  tmax[i] = [yy.round, "#{ii}:#{dd}"]
+  d = d + 1
+  y = y * x
+  yy = yy * xx
+  if (max_x < i)
+    max_x = i
+  end
+  if (max_y < y)
+    max_y = y
+  end
+  if (max_y < yy)
+    max_y = yy
+  end
+end
+m["東京最大予測"] =tmax
+m["東京平均予測"] =tavg
+# reset "東京"
+#pp tmax
+#exit
+
+ttemp = []
+m["東京都"].each { | i, s|
+  ttemp.push([ i, s])
+}
+m.delete("東京都")
+m["東京都"] = ttemp
+
 ###########################################################
 pref = []
 colors =[]
@@ -204,11 +247,7 @@ if (add_33percent_graph == "YES")
       data[i].push("'stroke-width: 0;'")
       data[i].push("true")
       data[i].push("''")
-      if (i == max_x)
-        data[i].push("null")
-      else
-        data[i].push("null")
-      end
+      data[i].push("null")
     end
   end
   if (lang == "-en")
@@ -231,11 +270,7 @@ if (add_33percent_graph == "YES")
       data[i].push("'stroke-width: 0;'")
       data[i].push("true")
       data[i].push("''")
-      if (i == max_x)
-        data[i].push("null")
-      else
-        data[i].push("null")
-      end
+      data[i].push("null")
     end
   end
   if (lang == "-en")
@@ -251,22 +286,14 @@ if (add_33percent_graph == "YES")
       data[i].push("''")
       data[i].push("false")
       data[i].push("''")
-      if (i == max_x)
-        data[i].push("null")
-      else
-        data[i].push("null")
-      end
+      data[i].push("null")
       y = y * 1.2599210498
     else
       data[i].push(y.round)
       data[i].push("'stroke-width: 0;'")
       data[i].push("true")
       data[i].push("''")
-      if (i == max_x)
-        data[i].push("null")
-      else
-        data[i].push("null")
-      end
+      data[i].push("null")
     end
   end
   if (lang == "-en")
@@ -281,11 +308,7 @@ if (add_33percent_graph == "YES")
     data[i].push("''")
     data[i].push("false")
     data[i].push("''")
-    if (i == max_x)
-      data[i].push("null")
-    else
-      data[i].push("null")
-    end
+    data[i].push("null")
     y = y * 1.1040895136738
   end
 else
@@ -305,13 +328,23 @@ m.each{|a|
     else
       pref.push(a[0])
     end
-    colors.push(color_table[color_index % max_color_index])
-    color_index = color_index + 1
+    if (a[0] == "東京最大予測" || a[0] == "東京平均予測")
+      colors.push("LightPink")
+    elsif (a[0] == "東京都")
+      colors.push("Red")
+    else
+      colors.push($color_table[color_index % max_color_index])
+      color_index = color_index + 1
+    end
     l = 0
     a[1].each {|i, d|
       data[x].push(i)
       data[x].push("''")
-      data[x].push("true")
+      if (a[0] == "東京最大予測" || a[0] == "東京平均予測")
+        data[x].push("true")
+      else
+        data[x].push("true")
+      end
       if (lang == "-en")
         p = $pref_en[:"#{a[0]}"]
       else
