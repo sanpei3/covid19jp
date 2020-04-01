@@ -75,5 +75,32 @@ $pref_en = {"北海道": "Hokkaido",
            "鹿児島県": "Kagoshima",
            "沖縄県": "Okinawa",
            "羽田空港": "Haneda Airport",
-           "不明": "Unknown",
-          }
+           "東京最大予測": "Tokyo Max",
+           "東京平均予測": "Tokyo avg",
+           }
+
+$color_table = [ #"Red",
+  "Blue", "Green", "Black", #"Cyan",
+  "Orange", "Purple",
+  "maroon", "olive", "fuchsia", #"aqua",
+  "lime", "teal",
+  "navy", "silver", "gray"]
+
+
+def index2days(i, lang)
+  if (lang == "-en")
+    if (i == 0)
+      return "0 day"
+    elsif (i == 1)
+      return "1st day"
+    elsif (i == 2)
+      return "2nd day"
+    elsif (i == 3)
+      return "3rd day"
+    else
+      return "#{i}th day"
+    end
+  else
+    return "#{i}日目"
+  end
+end
