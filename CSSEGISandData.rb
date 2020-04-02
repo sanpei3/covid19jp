@@ -324,11 +324,7 @@ end
 m.each{|a|
   if (a[1][0][0] >= base_count)
     x = 0
-    if (lang == "-en")
-      pref.push($pref_en[:"#{a[0]}"])
-    else
-      pref.push(a[0])
-    end
+    pref.push(prefJa2prefEn(a[0], lang))
     if (a[0] == "東京都")
       colors.push("Red")
     else
@@ -337,11 +333,7 @@ m.each{|a|
     end
     l = 0
     a[1].each {|i, d|
-      if (lang == "-en")
-        p = $pref_en[:"#{a[0]}"]
-      else
-        p = a[0]
-      end
+      p = prefJa2prefEn(a[0], lang)
       if (i == 0)
         data[x].push(base_count)
         data[x].push("'stroke-width: 0;'")

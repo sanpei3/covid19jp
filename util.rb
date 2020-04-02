@@ -74,7 +74,8 @@ $pref_en = {"北海道": "Hokkaido",
            "宮崎県": "Miyazaki",
            "鹿児島県": "Kagoshima",
            "沖縄県": "Okinawa",
-           "羽田空港": "Haneda Airport",
+            "羽田空港": "Haneda Airport",
+            "成田空港": "Narita Airport",
            "東京最大予測": "Tokyo Max",
            "東京平均予測": "Tokyo avg",
            }
@@ -102,5 +103,13 @@ def index2days(i, lang)
     end
   else
     return "#{i}日目"
+  end
+end
+
+def prefJa2prefEn (pref, lang)
+  if (lang == "-en" && $pref_en[:"#{pref}"] != nil)
+      return $pref_en[:"#{pref}"]
+  else
+    return pref
   end
 end

@@ -323,11 +323,7 @@ end
 m.each{|a|
   if (a[1][0][0] >= base_count)
     x = 0
-    if (lang == "-en")
-      pref.push($pref_en[:"#{a[0]}"])
-    else
-      pref.push(a[0])
-    end
+    pref.push(prefJa2prefEn(a[0], lang))
     if (a[0] == "東京最大予測" || a[0] == "東京平均予測")
       colors.push("LightPink")
     elsif (a[0] == "東京都")
@@ -345,11 +341,7 @@ m.each{|a|
       else
         data[x].push("true")
       end
-      if (lang == "-en")
-        p = $pref_en[:"#{a[0]}"]
-      else
-        p = a[0]
-      end
+      p = prefJa2prefEn(a[0], lang)
       data[x].push("'#{d}\n#{p}:#{i}'")
       if ((a[0] == "United Kingdom" && d =~ /XX03\/23/)||
           (a[0] == "Italy" && d =~ /XX03\/11/)||
