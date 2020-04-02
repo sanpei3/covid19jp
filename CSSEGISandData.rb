@@ -209,112 +209,43 @@ if (add_33percent_graph == "YES")
   select_str.push(add_33percent_suffix)
   select_str.push(["%%33-SELECT%%", "selected"])
   select_str.push(["%%33-NOT-SELECT%%", ""])
-  if (lang == "-en")
-    pref.push("CASES DOUBLE EVERY DAY")
-  else
-    pref.push("毎日2倍")
-  end
-  colors.push("LightGray")
-  y = base_count
-  for i in 0..max_x do
-    if (y < max_y)
-      data[i].push(y.round)
-      data[i].push("''")
-      data[i].push("false")
-      data[i].push("''")
-      data[i].push("null")
-      y = y * 2
+
+  title = [["CASES DOUBLE EVERY DAY", "毎日2倍", 2],
+           ["_EVERY 2DAYS", "2日で2倍", 1.41421356237309504880],
+           ["_EVERY 3DAYS", "3日で2倍", 1.2599210498],
+           ["_EVERY WEEK",  "一週間で2倍", 1.1040895136738]]
+  title.each{ |t_en, t_ja, c|
+    t = ""
+    if (lang == "-en")
+      t = t_en
     else
-      data[i].push(y.round)
-      data[i].push("'stroke-width: 0;'")
-      data[i].push("true")
-      data[i].push("''")
-      if (i == max_x)
+      t = t_ja
+    end
+    pref.push(t)
+    colors.push("LightGray")
+    y = base_count
+    for i in 0..max_x do
+      yy = y.round
+      d_index = index2days(i, lang)
+      tooltip = "'#{d_index}\n#{t}, #{yy}'"
+      if (y < max_y)
+        data[i].push(yy)
+        data[i].push("''")
+        data[i].push("false")
+        d_index = index2days(i, lang)
+        data[i].push(tooltip)
         data[i].push("null")
+        y = y * c
       else
+        data[i].push(y.round)
+        data[i].push("'stroke-width: 0;'")
+        data[i].push("true")
+        data[i].push("' '")
         data[i].push("null")
       end
     end
-  end
-  if (lang == "-en")
-    pref.push("_EVERY 2DAYS")
-  else
-    pref.push("2日で2倍")
-  end
-  colors.push("LightGray")
-  y = base_count
-  for i in 0..max_x do
-    if (y < max_y)
-      data[i].push(y.round)
-      data[i].push("''")
-      data[i].push("false")
-      data[i].push("''")
-      data[i].push("null")
-      y = y * 1.41421356237309504880
-    else
-      data[i].push(y.round)
-      data[i].push("'stroke-width: 0;'")
-      data[i].push("true")
-      data[i].push("''")
-      if (i == max_x)
-        data[i].push("null")
-      else
-        data[i].push("null")
-      end
-    end
-  end
-  if (lang == "-en")
-    pref.push("_EVERY 3DAYS")
-  else
-    pref.push("3日で2倍")
-  end
-  colors.push("LightGray")
-  y = base_count
-  for i in 0..max_x do
-    if (y < max_y)
-      data[i].push(y.round)
-      data[i].push("''")
-      data[i].push("false")
-      data[i].push("''")
-      if (i == max_x)
-        data[i].push("null")
-      else
-        data[i].push("null")
-      end
-      y = y * 1.2599210498
-    else
-      data[i].push(y.round)
-      data[i].push("'stroke-width: 0;'")
-      data[i].push("true")
-      data[i].push("''")
-      if (i == max_x)
-        data[i].push("null")
-      else
-        data[i].push("null")
-      end
-    end
-  end
-  if (lang == "-en")
-    pref.push("_EVERY WEEK")
-  else
-    pref.push("一週間で2倍")
-  end
-  colors.push("LightGray")
-  y = base_count
-  for i in 0..max_x do
-    data[i].push(y.round)
-    data[i].push("''")
-    data[i].push("false")
-    data[i].push("''")
-    if (i == max_x)
-      data[i].push("null")
-    else
-      data[i].push("null")
-    end
-    y = y * 1.1040895136738
-  end
+  }
 else
-  header_str.push(remove_33percent_suffix)
   select_str.push(remove_33percent_suffix)
   select_str.push(["%%33-SELECT%%", ""])
   select_str.push(["%%33-NOT-SELECT%%", "selected"])
