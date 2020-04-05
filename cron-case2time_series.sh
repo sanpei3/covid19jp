@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 CSV_FILE="time_series_covid19_confirmed_Japan.csv"
-WORKING_PATH=/home/sanpei/src/covidtrends/converter
+WORKING_PATH=/home/sanpei/src/covid19jp/converter
 to_address="sanpei@sanpei.org"
 COVID_CSV_FILE="COVID-19.csv"
 URL="https://dl.dropboxusercontent.com/s/6mztoeb6xf78g5w/COVID-19.csv"
