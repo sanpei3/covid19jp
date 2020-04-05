@@ -16,6 +16,14 @@ def date2mmdd(date)
   return date.strftime("%m/%d")
 end
 
+def date2mmddYY(date)
+  return date.strftime("%m/%d/%Y")
+end
+def date2mmddyy(date)
+  return date.strftime("%0m/%d/%y").gsub(/^0/, "").gsub(/\/0/, "/")
+end
+  
+
 def readHtml(filename, replace)
   File.open(filename, "r:UTF-8") do |body|
     body.each_line do |oneline|
@@ -76,6 +84,9 @@ $pref_en = {"北海道": "Hokkaido",
            "沖縄県": "Okinawa",
             "羽田空港": "Haneda Airport",
             "成田空港": "Narita Airport",
+            "関西国際空港": "Kansai Kokusai Airport",
+            "中部国際空港": "Chubu Kokusai Airport",
+            "不明": "unresolved",
            "東京最大予測": "Tokyo Max",
            "東京平均予測": "Tokyo avg",
            }
