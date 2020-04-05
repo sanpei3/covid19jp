@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 CSV_FILE="time_series_covid19_confirmed_Japan.csv"
-WORKING_PATH=/home/sanpei/src/covid19jp/converter
+WORKING_PATH=/home/sanpei/src/covid19jp
 to_address="sanpei@sanpei.org"
 COVID_CSV_FILE="COVID-19.csv"
 URL="https://dl.dropboxusercontent.com/s/6mztoeb6xf78g5w/COVID-19.csv"
@@ -37,7 +37,7 @@ if [ ! -s ${CSV_FILE} ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 SIZE ZERO ERROR" ${to_address}
     exit
 fi
-git commit -m "`/bin/date`" time_series_covid19_confirmed_Japan.csv
+git commit -m "`/bin/date`" time_series_covid19_confirmed_Japan.csv COVID-19.csv
 if [ $? -ne 0 ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 git commit error" ${to_address}
     exit
