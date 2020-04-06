@@ -11,6 +11,7 @@ MAIL="/usr/bin/mail"
 GIT="/usr/local/bin/git"
 
 cd ${WORKING_PATH}
+/bin/rm ${COVID_CSV_FILE}
 ${GIT} pull
 if [ $? -ne 0 ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 git pull error" ${to_address}
