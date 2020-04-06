@@ -8,9 +8,10 @@ URL="https://dl.dropboxusercontent.com/s/6mztoeb6xf78g5w/COVID-19.csv"
 CURL="/usr/local/bin/curl"
 FETCH="/usr/bin/fetch"
 MAIL="/usr/bin/mail"
+GIT="/usr/local/bin/git"
 
 cd ${WORKING_PATH}
-git pull
+${GIT} pull
 if [ $? -ne 0 ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 git pull error" ${to_address}
     exit
@@ -37,12 +38,12 @@ if [ ! -s ${CSV_FILE} ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 SIZE ZERO ERROR" ${to_address}
     exit
 fi
-git commit -m "`/bin/date`" time_series_covid19_confirmed_Japan.csv COVID-19.csv
+${GIT} commit -m "`/bin/date`" time_series_covid19_confirmed_Japan.csv COVID-19.csv
 if [ $? -ne 0 ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 git commit error" ${to_address}
     exit
 fi
-git push -u origin master
+${GIT} push -u origin master
 if [ $? -ne 0 ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 git push error" ${to_address}
     exit
