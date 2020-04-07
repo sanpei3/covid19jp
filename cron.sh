@@ -1,8 +1,11 @@
 #!/bin/sh
 GIT="/usr/local/bin/git"
+COVID_CSV_FILE="COVID-19.csv"
 cd /home/sanpei/src/covid19jp/CSSEGISandData/COVID-19/ ; ${GIT} pull
 cd /home/sanpei/src/covid19jp/CSSEGISandData/COVID-19/csse_covid_19_data ; ${GIT} pull
 cd /home/sanpei/src/covid19jp
+/bin/rm ${COVID_CSV_FILE}
+${GIT} pull
 /usr/local/bin/ruby rapper.rb
 cd contents/sanpei3.github.io
 /bin/cp covid19jp-100-33.html index.html
