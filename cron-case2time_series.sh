@@ -39,7 +39,7 @@ if [ ! -s ${CSV_FILE} ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 SIZE ZERO ERROR" ${to_address}
     exit
 fi
-${GIT} commit -m "`/bin/date`" time_series_covid19_confirmed_Japan.csv COVID-19.csv
+${GIT} commit -uno -m "`/bin/date`" time_series_covid19_confirmed_Japan.csv COVID-19.csv
 if [ $? -ne 0 ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 git commit error" ${to_address}
     exit
