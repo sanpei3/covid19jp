@@ -1,5 +1,15 @@
 # coding: utf-8
 
+def olderThan03212020 (filename)
+  if (filename =~ /0[12]-\d\d-2020.csv/ ||
+      filename =~ /03-[01]\d-2020.csv/ ||
+      filename =~ /03-2[01]-2020.csv/)
+    return true
+  else
+    return false
+  end
+end
+
 def mmddyyyy2date(str)
   if (str =~ /^\d\d\d\d\//)
     if (/(\d+)\/(\d+)\/(\d+)/ =~ str)
