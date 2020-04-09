@@ -10,6 +10,30 @@ color_index = 0
 
 lang = "-en"
 
+states = []
+countries = []
+
+if (nil)
+  states = [
+    ["Minnesota", "US"],
+    ["New York", "US"],
+    ["California", "US"],
+    ["Washington", "US"]
+  ]
+end
+if (nil)
+  countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom", "India", "Serbia", "Germany", "Philippines"]
+end
+prefectures = {"Tokyo" => true,
+               "Kanagawa" => true,
+               "Chiba" => true,
+               "Saitama" => true,
+               "Osaka" => true,
+               "Hyogo" => true,
+               "Fukuoka" => true,
+               "Aichi" => true
+              }
+
 ########################################
 
 def calculate_double_days(row, i)
@@ -32,15 +56,6 @@ def mmddyy2ChartDate(str)
   end
 end
 
-prefectures = {"Tokyo" => true,
-               "Kanagawa" => true,
-               "Chiba" => true,
-               "Saitama" => true,
-               "Osaka" => true,
-               "Hyogo" => true,
-               "Fukuoka" => true,
-               "Aichi" => true
-              }
 
 ########################################
 #
@@ -58,12 +73,6 @@ if (/(\d+)\/(\d\d)\/(\d\d)/ =~ start_date)
 end
 
 
-states = [
-  ["Minnesota", "US"],
-  ["New York", "US"],
-  ["California", "US"],
-  ["Washington", "US"]
-]
 base_count = 1
 last_day = {}
 dir_name = "CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports/"
@@ -147,7 +156,7 @@ m.each { |a|
 }
 
 
-start_i = 4
+start_i_j = 4
 
 CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
   if (time_series_header == [])
@@ -158,14 +167,14 @@ CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
     while (row[i] != start_date)
       i = i + 1
     end
-    start_i = i
+    start_i_j = i
     next
   end
   pref = row[0]
   if (prefectures[pref])
 #  if (true)
     #  puts pref
-    i = start_i
+    i = start_i_j
     d_i = 0
     while ( i < max_row)
       d = calculate_double_days(row, i)
@@ -185,7 +194,6 @@ CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
   # 探したところから、7日間の値を得る
 end
 
-countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom", "India", "Serbia", "Germany", "Philippines"]
 countries_hash = {}
 countries.each{ |c|
   countries_hash.store(:"#{c}", true)
@@ -232,7 +240,7 @@ data = []
 for i in 0..(max_x-1) do
   a = []
   d = 
-    a.push(mmddyy2ChartDate(time_series_header[i+start_i]))
+    a.push(mmddyy2ChartDate(time_series_header[i+start_i_j]))
   data.push(a)
 end
 
