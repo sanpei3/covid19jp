@@ -30,17 +30,6 @@ counties = [
 
 ################################
 
-def olderThan03212020 (filename)
-  if (filename =~ /0[12]-\d\d-2020.csv/ ||
-      filename =~ /03-[01]\d-2020.csv/ ||
-      filename =~ /03-2[01]-2020.csv/)
-    return true
-  else
-    return false
-  end
-end
-
-
 m = {}
 last_day = {}
 max_x = 0
