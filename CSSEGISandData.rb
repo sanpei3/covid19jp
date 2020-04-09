@@ -85,7 +85,7 @@ Dir::foreach(dir_name) do |filename|
         else
           last_day[m_index] = last_day[m_index] + 1
         end
-        d_index = index2days(last_day[m_index] + 1, lang)
+        d_index = index2days(last_day[m_index], lang)
         g = [confirmed, "#{d_index}:#{d}"]
         m[m_index][last_day[m_index]] = g
         if (max_x < last_day[m_index])
