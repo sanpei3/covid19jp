@@ -15,7 +15,7 @@ lang = "-en"
 def calculate_double_days(row, i)
   d = 6
   double = (d * Math.log(2, 2) / Math.log(row[i].to_f / row[i - d].to_f, 2))
-  if (double == Float::INFINITY)
+  if (double == Float::INFINITY || double.nan?)
     return 100
   else
     digit = 100.0
@@ -148,6 +148,7 @@ m.each { |a|
 
 
 start_i = 4
+
 CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
   if (time_series_header == [])
     time_series_header = row
@@ -183,6 +184,47 @@ CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
   end
   # 探したところから、7日間の値を得る
 end
+
+countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom", "India", "Serbia", "Germany", "Philippines"]
+countries_hash = {}
+countries.each{ |c|
+  countries_hash.store(:"#{c}", true)
+}
+start_i = 4
+time_series_header_global = []
+CSV.foreach("./CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv", "r:UTF-8") do |row|
+  if (time_series_header_global == [])
+    time_series_header_global = row
+    max_row = row.length
+    # start_dateな rowを探す
+    i = 4
+    while (row[i] != start_date)
+      i = i + 1
+    end
+    start_i = i
+    next
+  end
+  pref = row[1]
+  if (countries_hash[:"#{pref}"])
+    i = start_i
+    d_i = 0
+    while (i < max_row)
+      d = calculate_double_days(row, i)
+      if (m[pref] == nil)
+        m[pref] = [d, time_series_header_global[i]]
+      else
+        m[pref][d_i] = [d, time_series_header_global[i]]
+      end
+      i = i + 1
+      d_i = d_i + 1
+      if (max_x <= d_i)
+        max_x = d_i
+      end
+    end
+  end
+  # 探したところから、7日間の値を得る
+end
+
 
 pref = []
 colors =[]
