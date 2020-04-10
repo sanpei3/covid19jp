@@ -112,8 +112,9 @@ CSV.open('time_series_covid19_confirmed_Japan.csv','w') do |csv| # output to csv
     o = []
     o.push(pref)
     o.push("Japan")
-    o.push("0")
-    o.push("0")
+    latlong = pref2latlong(pref)
+    o.push(latlong[0])
+    o.push(latlong[1])
     bo[1].each do |i|
       o.push(i)
     end
