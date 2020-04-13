@@ -101,6 +101,11 @@ $pref_en = {"北海道": "Hokkaido",
            "東京平均予測": "Tokyo avg",
            }
 
+$pref_en2ja = {}
+$pref_en.each do |p|
+  $pref_en2ja[:"#{p[1]}"] = p[0]
+end
+
 $pref_latlong = {
   Hokkaido: [43.4672, 43.4672],
   Aomori: [40.7803, 40.7803],
