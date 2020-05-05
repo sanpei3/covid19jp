@@ -111,7 +111,7 @@ end
 
 if (world_wide == "-ww" && add_33percent_graph == "YES")
   cssegis_header = []
-  countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom", "India", "Serbia", "Germany", "Philippines"]
+  countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom", "India", "Serbia", "Germany", "Philippines", "Japan"]
   countries.each{ |c|
     $pref_en.store(:"#{c}", c)
   }
