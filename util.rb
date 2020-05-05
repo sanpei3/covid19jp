@@ -103,7 +103,7 @@ $pref_en = {"北海道": "Hokkaido",
 
 $pref_en2ja = {}
 $pref_en.each do |p|
-  $pref_en2ja[:"#{p[1]}"] = p[0]
+  $pref_en2ja[:"#{p[1]}"] = p[0].to_s
 end
 
 $pref_latlong = {
@@ -193,6 +193,16 @@ def prefJa2prefEn (pref, lang)
     return pref
   end
 end
+
+def prefen2prefjp (pref, lang)
+  if (lang == "" && $pref_en2ja[:"#{pref}"] != nil)
+    return $pref_en2ja[:"#{pref}"]
+  else
+    return pref
+  end
+end
+
+
 
 def pref2latlong (pref)
   if ($pref_latlong[:"#{pref}"] != nil)
