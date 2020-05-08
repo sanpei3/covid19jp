@@ -1,5 +1,6 @@
 # coding: utf-8
 
+require "date"
 def olderThan03212020 (filename)
   if (filename =~ /0[12]-\d\d-2020.csv/ ||
       filename =~ /03-[01]\d-2020.csv/ ||
