@@ -8,21 +8,46 @@ states_flag =true
 states = []
 if (states_flag)
   states = [
-    ["Minnesota", "US"],
-    ["New York", "US"],
-    ["California", "US"],
-    ["Washington", "US"]
+    [["Minnesota", "US"], true],
+    [["New York", "US"],   false],
+    [["California", "US"], false],
+    [["Washington", "US"], false],
+    [["Florida", "US"],    false],
+    [["Georgia", "US"],    false],
   ]
 end
 prefecture_list = [
-  "Tokyo",
-  "Kanagawa",
+  ["Tokyo",   true],
+  ["Kanagawa",true],
+  ["Ibaraki", false],
+  ["Chiba",   false],
+  ["Saitama", false],
 ]
 prefectures = {}
 prefecture_list.each do |p|
-  prefectures[p] = true
+  prefectures[p[0]] = p[1]
 end
+states.each do |p|
+  prefectures[p[0][0]] = p[1]
+end
+
 #
+color_table_daily = [ "Red",
+                      "Blue",
+                      "Green",
+                      "Orange",
+                      "Yellow",
+                      "purple",
+                      "grey",
+                    ]
+max_color_index = color_table_daily.length
+color_index = 0
+
+#  "Green", "Black", #"Cyan",
+#  "Orange", "Purple",
+#  "maroon", "olive", "fuchsia", #"aqua",
+#  , "teal", "lime"
+#  "navy", "silver", "gray"]
 
 ########################################
 # XX X軸を作ってみる
@@ -40,7 +65,7 @@ if (/^(\d+)-(\d+)-(\d+)/ =~ now_time.to_s)
   now = Date.new($1.to_i, $2.to_i, $3.to_i)
 end
 labels = []
-while (i < now)
+while (i <= now)
   labels.push(date2mmdd(i))
   i = i + 1
 end
@@ -72,7 +97,9 @@ end
             country = row[1]
             confirmed = row[3].to_i
             if (confirmed.to_i >= base_count)
-              states.each{|s, c|
+              states.each{|a|
+                s = a[0][0]
+                c = a[0][1]
                 if (state == s && country == c)
                   m_index = "#{s}"
                   onedayData[m_index] = confirmed
@@ -84,7 +111,9 @@ end
             state = row[2]
             country = row[3]
             confirmed = row[7].to_i
-            states.each{|s, c|
+            states.each{|a|
+                s = a[0][0]
+                c = a[0][1]
               if (state == s && country == c)
                 m_index = "#{s}"
                 # at first s, c だったら、テンポラリの合計に入れる
@@ -99,7 +128,9 @@ end
         end
       end
       # after March/22 check whether add to m[] or not
-      states.each{|s, c|
+      states.each{|a|
+        s = a[0][0]
+        c = a[0][1]
         m_index = "#{s}"
         d = date2mmdd(date)
         if (onedayData[m_index] != nil && onedayData[m_index] >= base_count)
@@ -166,7 +197,7 @@ CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
   pref = row[0]
   pref_avg = "#{pref}_avg"
   last_d = Float::INFINITY
-  if ((prefectures[pref]) &&
+  if ((prefectures[pref]) != nil &&
       pref != "Narita Airport")
     i = start_i_j
     d_i = 0
@@ -206,15 +237,33 @@ end
 header_str = []
 readHtml("daily-header.html", header_str)
 
+button_off_color = "white"
+button_on_color = "gray"
+puts "<button id=\"AllClear\">All Clear</button>"
+pref_color = {}
 m.each{|a|
-  pref = a[0]
+  pref = a[0].gsub(/ /,"")
+  pref_long = a[0]
   if (pref !~ /_avg/)
     button = <<-EOS
-	<button id="addDataset%%PREF%%">Add Dataset %%PREF_LONG%%</button>
-	<button id="removeDataset%%PREF%%">Remove Dataset %%PREF_LONG%%</button>
+	<button id="ToggleDataset%%PREF%%"  style="background-color:%%BUTTON%%">%%PREF_LONG%%</button>
 EOS
+    pref_short = pref.gsub(/_avg/,"")
+    if (pref_color[pref_short] == nil)
+      color = color_table_daily[color_index % max_color_index].downcase
+      color_index = color_index + 1
+      pref_color[pref_short] = color
+    else
+      color = pref_color[pref_short]
+    end
     button = button.gsub(/%%PREF%%/, pref.gsub(/ /,""))
     button = button.gsub(/%%PREF_LONG%%/, pref)
+    pref = a[0].gsub(/ /,"")
+    if (prefectures[pref_long] == true)
+      button = button.gsub(/%%BUTTON%%/, color)
+    else
+      button = button.gsub(/%%BUTTON%%/, button_off_color)
+    end
     puts button
   end
 }
@@ -225,37 +274,13 @@ pp labels
 mid_str = []
 readHtml("daily-mid2.html", mid_str)
 
-color_table_daily = [ "Red", 
-                      "Blue",
-                      "Green", 
-                      "Orange",
-                      "Yellow",
-                      "purple",
-                      "grey",
-                    ]
-
-#  "Green", "Black", #"Cyan",
-#  "Orange", "Purple",
-#  "maroon", "olive", "fuchsia", #"aqua",
-#  , "teal", "lime"
-#  "navy", "silver", "gray"]
-
-  
-max_color_index = color_table_daily.length
-color_index = 0
 buttons = ""
-pref_color = {}
+allclear_str = ""
 m.each{|a|
   pref = a[0].gsub(/ /,"")
   pref_long = a[0]
   pref_short = pref.gsub(/_avg/,"")
-  if (pref_color[pref_short] == nil)
-    color = color_table_daily[color_index % max_color_index].downcase
-    color_index = color_index + 1
-    pref_color[pref_short] = color
-  else
-    color = pref_color[pref_short]
-  end
+  color = pref_color[pref_short]
   
   puts "var data#{pref} = "
   puts "{label: '#{pref_long}',"
@@ -272,28 +297,26 @@ m.each{|a|
   pp a[1]
   puts ","
   puts "			}; "
-  if (pref !~ /^NewYork/ && pref !~ /Washington/ && pref !~ /California/)
+  if (prefectures[pref_long.gsub(/_avg/,"")]  == true)
     puts "barChartData.datasets.push(data#{pref});"
   end
 
   if (pref !~ /_avg/)
-    if (pref !~ /^NewYork/)
+    if (prefectures[pref_long.gsub(/_avg/,"")] == true)
       puts "var datasetFlag#{pref} = true;"
     else
       puts "var datasetFlag#{pref} = false;"
     end
   button =  <<-EOS
-		document.getElementById('addDataset%%PREF%%').addEventListener('click', function() {
-		if (datasetFlag%%PREF%% == false) {
+		document.getElementById('ToggleDataset%%PREF%%').addEventListener('click', function() {
+		var element = document.getElementById("ToggleDataset%%PREF%%");
+		  if (datasetFlag%%PREF%% == false) {
 			barChartData.datasets.push(data%%PREF%%_avg);
 			barChartData.datasets.push(data%%PREF%%);
 			datasetFlag%%PREF%% = true;
+			element.style.backgroundColor = '%%BUTTON_ON%%';
 			window.myBar.update();
-			}
-		});
-
-		document.getElementById('removeDataset%%PREF%%').addEventListener('click', function() {
-                    if (datasetFlag%%PREF%% == true) {
+		  } else {
                         var l = barChartData.datasets.length;
                         console.log(l);
                         for (let i = 0; i < l ; i++) {
@@ -314,18 +337,29 @@ m.each{|a|
                             }
                         }
          		datasetFlag%%PREF%% = false;
+			element.style.backgroundColor = '%%BUTTON_OFF%%';
                         window.myBar.update();
-		    }
+		  }
 		});
 EOS
   button = button.gsub(/%%PREF%%/, pref.gsub(/ /,""))
   button = button.gsub(/%%PREF_LONG%%/, pref_long)
+  button = button.gsub(/%%BUTTON_ON%%/, color)
+  button = button.gsub(/%%BUTTON_OFF%%/, button_off_color)
   buttons = buttons + button
+  allclear_str = allclear_str + "datasetFlag#{pref_short} = false;
+var element = document.getElementById(\"ToggleDataset#{pref_short}\");element.style.backgroundColor = '#{button_off_color}'; "
+
   end
 }
 
 tail_str = []
 readHtml("daily-tail.html", tail_str)
 puts buttons
+puts "		document.getElementById('AllClear').addEventListener('click', function() {"
+puts "			barChartData.datasets =[];"
+puts allclear_str
+puts "                        window.myBar.update();"
+puts "		});"
 tail2_str = []
 readHtml("daily-tail2.html", tail2_str)
