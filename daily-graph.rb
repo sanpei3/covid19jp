@@ -361,4 +361,5 @@ puts allclear_str
 puts "                        window.myBar.update();"
 puts "		});"
 tail2_str = []
+tail2_str.push(["%%UPDATE%%", Time.now.to_s])
 readHtml("daily-tail2.html", tail2_str)
