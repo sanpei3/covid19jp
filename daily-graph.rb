@@ -238,7 +238,6 @@ header_str = []
 readHtml("daily-header.html", header_str)
 
 button_off_color = "white"
-button_on_color = "gray"
 puts "<button id=\"AllClear\">All Clear</button>"
 pref_color = {}
 m.each{|a|
