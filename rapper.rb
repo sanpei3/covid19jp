@@ -93,6 +93,7 @@ base_values = [100,150]
 if (md5_old != md5 || md5_csse_old != md5_csse)
   create_graph_ww(base_values)
   create_graph_CSSE(base_values)
+  system("/usr/local/bin/ruby daily-graph.rb > contents/sanpei3.github.io/covid19-daily.html")
   File.open(md5_filename, "w") do |io|
     io.write md5
   end
