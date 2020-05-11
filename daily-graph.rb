@@ -4,40 +4,39 @@ require 'csv'
 require "./util"
 #
 #
+pref_color = {}
+
 states_flag =true
 states = []
 if (states_flag)
   states = [
-    [["Minnesota", "US"], true],
-    [["New York", "US"],   false],
-    [["California", "US"], false],
-    [["Washington", "US"], false],
-    [["Florida", "US"],    false],
-    [["Georgia", "US"],    false],
+    [["Minnesota", "US"],  true,  "red"],
+    [["New York", "US"],   false, "blue"],
+    [["California", "US"], false, "green"],
+    [["Washington", "US"], false, nil],
+    [["Florida", "US"],    false, nil],
+    [["Georgia", "US"],    false, nil],
   ]
 end
 prefecture_list = [
-  ["Tokyo",   true],
-  ["Kanagawa",true],
-  ["Ibaraki", false],
-  ["Chiba",   false],
-  ["Saitama", false],
+  ["Tokyo",   true, "orange"],
+  ["Kanagawa",true, "yellow"],
+  ["Ibaraki", false, nil],
+  ["Chiba",   false, nil],
+  ["Saitama", false, nil],
 ]
 prefectures = {}
 prefecture_list.each do |p|
   prefectures[p[0]] = p[1]
+  pref_color[p[0]] = p[2]
 end
 states.each do |p|
   prefectures[p[0][0]] = p[1]
+  pref_color[p[0][0]] = p[2]
 end
 
 #
-color_table_daily = [ "Red",
-                      "Blue",
-                      "Green",
-                      "Orange",
-                      "Yellow",
-                      "purple",
+color_table_daily = [ "purple",
                       "grey",
                     ]
 max_color_index = color_table_daily.length
@@ -239,7 +238,6 @@ readHtml("daily-header.html", header_str)
 
 button_off_color = "white"
 puts "<button id=\"AllClear\">All Clear</button>"
-pref_color = {}
 m.each{|a|
   pref = a[0].gsub(/ /,"")
   pref_long = a[0]
