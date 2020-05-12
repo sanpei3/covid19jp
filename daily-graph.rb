@@ -25,6 +25,10 @@ prefecture_list = [
   ["Chiba",   false, nil],
   ["Saitama", false, nil],
 ]
+county_list = [
+  [["Rice", "Minnesota"],   true, "red"],
+]
+
 prefectures = {}
 prefecture_list.each do |p|
   prefectures[p[0]] = p[1]
@@ -35,6 +39,10 @@ states.each do |p|
   pref_color[p[0][0]] = p[2]
 end
 
+county_list.each do |p|
+  prefectures["#{p[0][0]}_#{p[0][1]}"] = p[1]
+  pref_color["#{p[0][0]}_#{p[0][1]}"] = p[2]
+end  
 #
 color_table_daily = [ "purple",
                       "grey",
@@ -177,6 +185,64 @@ end
 end
 
 ######################################################################
+# county
+
+time_series_header = []
+start_i_j = 11
+CSV.foreach("CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv", "r:UTF-8") do |row|
+  if (time_series_header == [])
+    time_series_header = row
+    max_row = row.length
+    # start_dateな rowを探す
+    i = 11
+    while (row[i] != start_date)
+      i = i + 1
+    end
+    start_i_j = i
+    next
+  end
+  county = row[5]
+  state = row[6]
+  c = "#{county}_#{state}"
+  c_avg = "#{c}_avg"
+  last_d = Float::INFINITY
+#  puts "##############"
+#  puts row
+  county_list.each do | cs, f, color|
+    if (county == cs[0] && state == cs[1])
+      i = start_i_j
+      d_i = 0
+      d_avg = 0
+      while ( i < max_row)
+        d = row[i].to_i - row[i - 1].to_i
+        if (d < 0)
+          d = 0
+        end
+        #      if (i - 6 >= 4)
+        d_avg = (row[i].to_i - row[i - 6].to_i) / 7
+        if (d_avg < 0)
+          d_avg = 0
+        end
+        #      end
+        if (m[c] == nil)
+          m[c] = [d]
+          m[c_avg] = [d_avg]
+        else
+          m[c][d_i] = d
+          m[c_avg][d_i] = d_avg
+        end
+        last_d = d
+        i = i + 1
+        d_i = d_i + 1
+        if (max_x <= d_i)
+          max_x = d_i
+        end
+      end
+    end
+  end
+end
+
+######################################################################
 # Japan prefectures
 
 time_series_header = []
@@ -222,7 +288,6 @@ CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
     end
   end
 end
-
 
 ######################################################################
 # XX 7 days avg.
