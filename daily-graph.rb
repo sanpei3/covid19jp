@@ -140,7 +140,6 @@ end
           else
             last_day[m_index] = last_day[m_index] + 1
           end
-          #g = [confirmed, "#{d_index}:#{d}"]
           g = confirmed.to_i
           m[m_index][last_day[m_index]] = g
           if (max_x < last_day[m_index])
@@ -158,16 +157,17 @@ end
     i = a[1].length - 1
     s_avg =  "#{a[0]}_avg"
     m_avg[s_avg] = [0]
-    while (i >= 1)
-      if (i > 6)
-        m_avg[s_avg][i] = (a[1][i] - a[1][i - 6]) / 7
-      else
-        m_avg[s_avg][i] = 0
-      end
+    while (i >= 6)
+      m_avg[s_avg][i] = (a[1][i] - a[1][i - 6]) / 7
       m[a[0]][i] = a[1][i] - a[1][i - 1]
       if (m[a[0]][i] < 0)
         m[a[0]][i] = 0
       end
+      i = i - 1
+    end
+    while (i >= 0)
+      m[a[0]].shift
+      m_avg[s_avg].shift
       i = i - 1
     end
   }
@@ -177,10 +177,10 @@ end
 end
 
 ######################################################################
+# Japan prefectures
 
 time_series_header = []
 start_i_j = 4
-# XX Tokyo, Kanagawa daily new cases>
 CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
   if (time_series_header == [])
     time_series_header = row
@@ -203,13 +203,9 @@ CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
     d_avg = 0
     while ( i < max_row)
       d = row[i].to_i - row[i - 1].to_i
-      if (i - start_i_j >= 6)
-        d_avg = (row[i].to_i - row[i -6].to_i) / 7
-      end
-      if (d == Float::INFINITY && last_d != Float::INFINITY)
-        d = last_d
-      end
-      #    puts d
+#      if (i - 6 >= 4)
+        d_avg = (row[i].to_i - row[i - 6].to_i) / 7
+#      end
       if (m[pref] == nil)
         m[pref] = [d]
         m[pref_avg] = [d_avg]
