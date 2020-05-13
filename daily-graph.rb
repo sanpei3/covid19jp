@@ -27,6 +27,7 @@ prefecture_list = [
 ]
 county_list = [
   [["Rice", "Minnesota"],   true, "red"],
+  [["Hennepin","Minnesota"], false, nil],
 ]
 
 prefectures = {}
@@ -59,7 +60,7 @@ color_index = 0
 ########################################
 # XX X軸を作ってみる
 
-start_mmdd = "3/22"
+start_mmdd = "3/16"
 start_yy = "20"
 
 i = mmddyyyy2date("#{start_mmdd}/20#{start_yy}")
