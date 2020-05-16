@@ -49,6 +49,7 @@ prefecture_list = ["Tokyo",
 prefecture_list = [
   "Tokyo",
               "Hokkaido",
+               "Kanagawa",
               ]
 prefectures = {}
 prefecture_list.each do |p|
