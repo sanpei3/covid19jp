@@ -3,10 +3,8 @@ require 'digest/md5'
 #########################################################
 def create_graph(base_values)
   base_values.each{ |i|
-    system("/usr/local/bin/ruby covid19.rb #{i} NO -ja true > contents/sanpei3.github.io/covid19jp-#{i}.html")
-    system("/usr/local/bin/ruby covid19.rb #{i} YES -ja true> contents/sanpei3.github.io/covid19jp-#{i}-33.html")
-    system("/usr/local/bin/ruby covid19.rb #{i} NO -en true> contents/sanpei3.github.io/covid19jp-#{i}-en.html")
-    system("/usr/local/bin/ruby covid19.rb #{i} YES -en true > contents/sanpei3.github.io/covid19jp-#{i}-33-en.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} YES -ja true> contents/sanpei3.github.io/covid19jp-#{i}.html")
+    system("/usr/local/bin/ruby covid19.rb #{i} YES -en true > contents/sanpei3.github.io/covid19jp-#{i}-en.html")
   }
 end
 
@@ -80,7 +78,7 @@ end
 #
 md5_csse = Digest::MD5.new.update(csv).to_s
 ##################################################
-base_values = [1,10,20,30,40,50,60,70,80,90,100,150]
+base_values = [150]
 if (md5_old != md5)
   create_graph(base_values)
   File.open(md5_filename, "w") do |io|
@@ -88,7 +86,7 @@ if (md5_old != md5)
   end
 end
 
-base_values = [100,150]
+base_values = [150]
 
 if (md5_old != md5 || md5_csse_old != md5_csse)
   create_graph_ww(base_values)
