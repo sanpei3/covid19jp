@@ -84,81 +84,51 @@ max_x = 0
 max_y = 0
 ######################################################################
 if (states_flag)
-  start_Date = Time.now
-if (/(\d+)\/(\d+)\/(\d\d)/ =~ start_date)
-  start_Date = Date.new("20#{$3}".to_i, $1.to_i, $2.to_i)
-end
-  base_count = 1
-  last_day = {}
-  days = {}
-  dir_name = "CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports/"
-  Dir::foreach(dir_name) do |filename|
-    if (filename =~ /\.csv$/)
-      onedayData = {}
-      date = ""
-      CSV.foreach(dir_name + filename, "r:UTF-8") do |row|
-        /(\d\d)-(\d\d)-(\d\d\d\d).csv/.match(filename)
-        date = Date.new($3.to_i, $1.to_i, $2.to_i)
-        if (date >= start_Date - 6)
-          if (olderThan03212020(filename))
-            state = row[0]
-            country = row[1]
-            confirmed = row[3].to_i
-            if (confirmed.to_i >= base_count)
-              states.each{|a|
-                s = a[0][0]
-                c = a[0][1]
-                if (state == s && country == c)
-                  m_index = "#{s}"
-                  onedayData[m_index] = confirmed
-                end
-              }
-            end
+  time_series_header = []
+  start_i_j = 11
+  CSV.foreach("CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv", "r:UTF-8") do |row|
+    if (time_series_header == [])
+      time_series_header = row
+      max_row = row.length
+      # start_dateな rowを探す
+      i = 11
+      while (row[i] != start_date)
+        i = i + 1
+      end
+      start_i_j = i - 6
+      next
+    end
+    county = row[5]
+    state = row[6]
+    s = "#{state}"
+    s_avg = "#{s}_avg"
+    last_d = Float::INFINITY
+    states.each do | s, f, color|
+      if (state == s[0])
+        i = start_i_j
+        d_i = 0
+        while ( i < max_row)
+          d = row[i].to_i
+          if (d < 0)
+            d = 0
+          end
+          if (m[state] == nil)
+            m[state] = [d]
           else
-            county = row[1]
-            state = row[2]
-            country = row[3]
-            confirmed = row[7].to_i
-            states.each{|a|
-                s = a[0][0]
-                c = a[0][1]
-              if (state == s && country == c)
-                m_index = "#{s}"
-                # at first s, c だったら、テンポラリの合計に入れる
-                if (onedayData[m_index]  == nil)
-                  onedayData[m_index]  = confirmed
-                else
-                  onedayData[m_index]  = onedayData[m_index] + confirmed
-                end
-              end
-            }
+            if (m[state][d_i] == nil)
+              m[state][d_i] = d
+            else
+              m[state][d_i] = m[state][d_i] + d
+            end
+          end
+          last_d = d
+          i = i + 1
+          d_i = d_i + 1
+          if (max_x <= d_i)
+            max_x = d_i
           end
         end
       end
-      # after March/22 check whether add to m[] or not
-      states.each{|a|
-        s = a[0][0]
-        c = a[0][1]
-        m_index = "#{s}"
-        d = date2mmdd(date)
-        if (onedayData[m_index] != nil && onedayData[m_index] >= base_count)
-          confirmed = onedayData[m_index]
-          if (last_day[m_index] == nil)
-            last_day[m_index] = 0
-            m[m_index] = []
-          else
-            last_day[m_index] = last_day[m_index] + 1
-          end
-          g = confirmed.to_i
-          m[m_index][last_day[m_index]] = g
-          if (max_x < last_day[m_index])
-            max_x = last_day[m_index]
-          end
-          if (max_y < confirmed)
-            max_y = confirmed
-          end
-        end
-      }
     end
   end
   m_avg = {}
