@@ -22,23 +22,15 @@ def create_graph_CSSE(base_values)
   }
 end
 
-source_url = "https://dl.dropboxusercontent.com/s/6mztoeb6xf78g5w/COVID-19.csv"
-md5_filename = "COVID-19.md5"
-csv_filename = "COVID-19.csv"
 md5_csse_filename = "confirmed_global.md5"
 csv_csse_filename = "./CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
 
 csv_japan_filename = "time_series_covid19_confirmed_Japan.csv"
 md5_japan_filename = "time_series_covid19_confirmed_Japan.md5"
 
-md5_old = ""
 md5_csse_old = ""
 md5_japan_old = ""
 create_md5_flag = nil
-if (!File.exist?(md5_filename))
-  File.new(md5_filename, "w")
-  create_md5_flag = true
-end
 if (!File.exist?(md5_csse_filename))
   File.new(md5_csse_filename, "w")
   create_md5_flag = true
@@ -51,11 +43,6 @@ if (create_md5_flag == nil)
   sleep(rand(20))
 end
 
-File.open(md5_filename,"r") do |mail|
-  mail.each_line do |oneline|
-    md5_old = oneline
-  end
-end
 File.open(md5_csse_filename,"r") do |mail|
   mail.each_line do |oneline|
     md5_csse_old = oneline
@@ -66,20 +53,9 @@ File.open(md5_japan_filename,"r") do |mail|
     md5_japan_old = oneline
   end
 end
-#
-#
-# 1. curl file
-system("/usr/local/bin/curl -o #{csv_filename} #{source_url}")
 
 # 変化があったか確認
-csv = ""
-File.open(csv_filename,"r") do |csv_file|
-  csv_file.each_line do |oneline|
-    csv = csv + oneline
-  end
-end
 #
-md5 = Digest::MD5.new.update(csv).to_s
 
 csv = ""
 File.open(csv_csse_filename,"r") do |csv_file|
@@ -108,12 +84,9 @@ if (md5_japan_old != md5_japan)
 end
 
 base_values = [150]
-if (md5_old != md5 || md5_csse_old != md5_csse)
+if (md5_csse_old != md5_csse)
   create_graph_ww(base_values)
   create_graph_CSSE(base_values)
-  File.open(md5_filename, "w") do |io|
-    io.write md5
-  end
   File.open(md5_csse_filename, "w") do |io|
     io.write md5_csse
   end
