@@ -100,15 +100,14 @@ end
 md5_japan = Digest::MD5.new.update(csv).to_s
 ##################################################
 base_values = [150]
-if (md5_old != md5)
+if (md5_japan_old != md5_japan)
   create_graph(base_values)
-  File.open(md5_filename, "w") do |io|
-    io.write md5
+  File.open(md5_japan_filename, "w") do |io|
+    io.write md5_japan
   end
 end
 
 base_values = [150]
-
 if (md5_old != md5 || md5_csse_old != md5_csse)
   create_graph_ww(base_values)
   create_graph_CSSE(base_values)
@@ -122,9 +121,6 @@ end
 
 if (md5_japan_old != md5_japan || md5_csse_old != md5_csse)
   system("/usr/local/bin/ruby daily-graph.rb > contents/sanpei3.github.io/covid19-daily.html")
-  File.open(md5_filename, "w") do |io|
-    io.write md5
-  end
   File.open(md5_csse_filename, "w") do |io|
     io.write md5_csse
   end
