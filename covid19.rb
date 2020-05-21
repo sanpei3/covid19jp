@@ -29,84 +29,37 @@ max_y = 0
 m = {}
 last_index = {}
 skip_header = true
-CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
-  if (skip_header)
-    skip_header = nil
-    next
+
+time_series_header = []
+max_row = 0
+CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
+  if (time_series_header == [])
+    time_series_header =row
+    max_row = row.length
   end
-  pref = row[9]
-  day = row[7]
-  if (day == nil)
-    next
+  pref = row[0]
+  i = 4
+  d_i = 0
+  while (i <= max_row)
+    if (row[i].to_i >= base_count)
+      if (m[pref] == nil)
+        m[pref] = []
+      end
+      d = date2mmdd(mmddyyyy2date(time_series_header[i]))
+      d_index = index2days(d_i, lang)
+      m[pref][d_i] = [row[i].to_i, "#{d_index}:#{pref}"]
+      d_i = d_i + 1
+      if (max_y < row[i].to_i)
+        max_y = row[i].to_i
+      end
+    end
+    i = i + 1
   end
-  d = date2mmdd(mmddyyyy2date(day))
-  status = row[15]
-  status2 = row[16]
-  if (status2 =~ /帰国/)
-    next
-  end
-  if (status == "退院" || status =~ /^死亡/)
-    next
-  end
-  if (last_day[pref] == nil)
-    # 新規
-    last_day[pref] = day
-    if (lang == "-en")
-      m[pref] = [[1, "0 day:#{d}"]]
-    else
-      m[pref] = [[1, "0日目:#{d}"]]
-    end
-    if (max_y < 1)
-      max_y = 1
-    end
-    last_index[pref] = 0
-    ############################################
-  elsif (last_day[pref] != day)
-    # 新しい
-    if (m[pref][0][0] >= base_count)
-      # 基準以上になったらずらしていく
-      # lastと引き算をする
-      new_day = last_index[pref] + (mmddyyyy2date(day) - mmddyyyy2date(last_day[pref])).to_i
-      i = last_index[pref]
-      di = mmddyyyy2date(last_day[pref])
-      while (new_day > i)
-        d_index = index2days(last_index[pref], lang)
-        m[pref][i] = [m[pref][last_index[pref]][0], "#{d_index}:#{date2mmdd(di)}"]
-        i = i +1
-        di = di + 1
-      end
-      d_index = index2days(last_index[pref], lang)
-      m[pref][new_day] = [m[pref][last_index[pref]][0] + 1, "#{d_index}:#{d}"]   # 日数分ずらして
-      if (max_y < m[pref][last_index[pref]][0] + 1)
-        max_y = m[pref][last_index[pref]][0] + 1
-      end
-      last_index[pref] = new_day
-      if (max_x < new_day)
-        max_x = new_day
-      end
-      last_day[pref] = day
-    else
-      if (lang == "-en")
-        m[pref][0] = [m[pref][0][0] + 1, "0 day:#{d}"]
-      else
-        m[pref][0] = [m[pref][0][0] + 1, "0日目:#{d}"]
-      end
-      if (max_y < m[pref][0][0] + 1)
-        max_y = m[pref][0][0] + 1
-      end
-      last_day[pref] = day
-    end
-  else
-    # 同じ日ならば、
-    d_index = index2days(last_index[pref], lang)
-    m[pref][last_index[pref]] =
-      [m[pref][last_index[pref]][0] + 1,
-       "#{d_index}:#{d}"]
-    if (max_y < m[pref][last_index[pref]][0] + 1)
-      max_y = m[pref][last_index[pref]][0] + 1
-    end
+  if (max_x < d_i)
+    max_x = d_i
   end
 end
+
 ###########################################################
 
 if (world_wide == "-ww" && add_33percent_graph == "YES")
@@ -146,57 +99,6 @@ if (world_wide == "-ww" && add_33percent_graph == "YES")
     }
   end
 end
-###########################################################
-tmax = []
-tavg =[]
-start = 0
-m["東京都"].each { | i, s|
-  tmax.push([ i, s])
-  tavg.push([ i, s])
-  if (s =~ /(\d*).*:03\/29/)
-    start = $1.to_i
-  end
-}
-start = start + 1
-
-a = tmax[start][0]  # y= a*x^{day}
-a=430
-x = 1.047456318
-xx = 1.105547511
-
-y = a * x
-yy = a * xx
-d = mmddyyyy2date("2020/03/30")
-for i in start..(14+start)
-  dd = date2mmdd(d)
-  ii = index2days(i, lang)
-  tavg[i] = [y.round, "#{ii}:#{dd}"]
-  tmax[i] = [yy.round, "#{ii}:#{dd}"]
-  d = d + 1
-  y = y * x
-  yy = yy * xx
-  if (max_x < i)
-    max_x = i
-  end
-  if (max_y < y)
-    max_y = y
-  end
-  if (max_y < yy)
-    max_y = yy
-  end
-end
-m["東京最大予測"] =tmax
-m["東京平均予測"] =tavg
-# reset "東京"
-#pp tmax
-#exit
-
-ttemp = []
-m["東京都"].each { | i, s|
-  ttemp.push([ i, s])
-}
-m.delete("東京都")
-m["東京都"] = ttemp
 
 ###########################################################
 pref = []
