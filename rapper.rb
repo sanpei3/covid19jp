@@ -29,7 +29,7 @@ md5_csse_filename = "confirmed_global.md5"
 csv_csse_filename = "./CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
 
 csv_japan_filename = "time_series_covid19_confirmed_Japan.csv"
-md5_japan_filename = "time_series_covid19_confirmed_Japan.,md5"
+md5_japan_filename = "time_series_covid19_confirmed_Japan.md5"
 
 md5_old = ""
 md5_csse_old = ""
@@ -127,5 +127,8 @@ if (md5_japan_old != md5_japan || md5_csse_old != md5_csse)
   end
   File.open(md5_csse_filename, "w") do |io|
     io.write md5_csse
+  end
+  File.open(md5_japan_filename, "w") do |io|
+    io.write md5_japan
   end
 end
