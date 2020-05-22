@@ -34,70 +34,41 @@ m = {}
 last_day = {}
 max_x = 0
 max_y = 0
-Dir::foreach(dir_name) do |filename|
-  if (filename =~ /\.csv$/)
-    onedayData = {}
-    date = ""
-    CSV.foreach(dir_name + filename, "r:UTF-8") do |row|
-      # for old style (before March-21-2020)
-      /(\d\d)-(\d\d)-(\d\d\d\d).csv/.match(filename)
-      date = Date.new($3.to_i, $1.to_i, $2.to_i)
-      if (olderThan03212020(filename))
-        state = row[0]
-        country = row[1]
-        confirmed = row[3].to_i
-        if (confirmed.to_i >= base_count)
-          states.each{|s, c|
-            if (state == s && country == c)
-              m_index = "#{s},#{c}"
-              onedayData[m_index] = confirmed
-            end
-          }
-        end
-      else
-        county = row[1]
-        state = row[2]
-        country = row[3]
-        confirmed = row[7].to_i
-        states.each{|s, c|
-          if (state == s && country == c)
-            m_index = "#{s},#{c}"
-            # at first s, c だったら、テンポラリの合計に入れる
-            if (onedayData[m_index]  == nil)
-              onedayData[m_index]  = confirmed
-            else
-              onedayData[m_index]  = onedayData[m_index] + confirmed
-            end
+time_series_header = []
+start_i_j = 11
+max_row = 1
+CSV.foreach("time_series_covid19_confirmed_US_State.csv", "r:UTF-8") do |row|
+  if (time_series_header == [])
+    time_series_header =row
+    max_row = row.length
+  end
+  pref = row[0]
+  states.each{|s, c|
+    if (pref == s)
+      i = 4
+      d_i = 0
+      while (i <= max_row)
+        if (row[i].to_i >= base_count)
+          if (m[pref] == nil)
+            m[pref] = []
           end
-        }
+          d = date2mmdd(mmddyyyy2date(time_series_header[i]))
+          d_index = index2days(d_i, lang)
+          m[pref][d_i] = [row[i].to_i, "#{d_index}:#{time_series_header[i]}"]
+          d_i = d_i + 1
+          if (max_y < row[i].to_i)
+            max_y = row[i].to_i
+          end
+        end
+        i = i + 1
+      end
+      if (max_x < d_i)
+        max_x = d_i
       end
     end
-    # after March/22 check whether add to m[] or not
-    states.each{|s, c|
-      m_index = "#{s},#{c}"
-      d = date2mmdd(date)
-      if (onedayData[m_index] != nil && onedayData[m_index] >= base_count)
-        confirmed = onedayData[m_index]
-        if (last_day[m_index] == nil)
-          #puts s, c, confirmed, date.to_s
-          last_day[m_index] = 0
-          m[m_index] = []
-        else
-          last_day[m_index] = last_day[m_index] + 1
-        end
-        d_index = index2days(last_day[m_index], lang)
-        g = [confirmed, "#{d_index}:#{d}"]
-        m[m_index][last_day[m_index]] = g
-        if (max_x < last_day[m_index])
-          max_x = last_day[m_index]
-        end
-        if (max_y < confirmed)
-          max_y = confirmed
-        end
-      end
-    }
-  end
+  }
 end
+
 #############################################
 time_series_header = []
 max_row = 0
@@ -116,7 +87,7 @@ CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
       end
       d = date2mmdd(mmddyyyy2date(time_series_header[i]))
       d_index = index2days(d_i, lang)
-      m[pref][d_i] = [row[i].to_i, "#{d_index}:#{pref}"]
+      m[pref][d_i] = [row[i].to_i, "#{d_index}:#{time_series_header[i]}"]
       d_i = d_i + 1
       if (max_y < row[i].to_i)
         max_y = row[i].to_i
@@ -220,16 +191,16 @@ m.each{|a|
         data[x].push("''")
         data[x].push("true")
         data[x].push("'#{d}\n#{p}:#{i}'")
-        if (p == "New York,US" && d =~ /03\/22/)
+        if (p == "New York" && d =~ /3\/22\/20/)
           data[x].push("'PAUSE'")
-        elsif (p == "California,US" && d =~ /03\/17/)
+        elsif (p == "California" && d =~ /3\/17\/20/)
           data[x].push("'Bay Area:shelter in place'")
-        elsif (p == "California,US" && d =~ /03\/19/)
+        elsif (p == "California" && d =~ /3\/19\/20/)
           data[x].push("'California:shelter in place'")
-        elsif (p == "Minnesota,US" && d =~ /03\/27/)
+        elsif (p == "Minnesota" && d =~ /3\/27\/20/)
           data[x].push("'Stay home'")
           #data[x].push("'Stay home except for essential needs'")
-        elsif (p == "Washington,US" && d =~ /03\/23/)
+        elsif (p == "Washington" && d =~ /3\/23\/20/)
           data[x].push("'Stay home, Stay Healthy'")
         elsif (p == "Tokyo" && d =~ /XX03\/28/)
           data[x].push("'stay at home'")

@@ -4,6 +4,7 @@ cd /home/sanpei/src/covid19jp/CSSEGISandData/COVID-19/ ; ${GIT} pull
 cd /home/sanpei/src/covid19jp/CSSEGISandData/COVID-19/csse_covid_19_data ; ${GIT} pull
 cd /home/sanpei/src/covid19jp
 ${GIT} pull
+/usr/local/bin/ruby case2time_series-US-State.rb
 /usr/local/bin/ruby rapper.rb
 cd contents/sanpei3.github.io
 /bin/cp covid19-daily.html index.html
