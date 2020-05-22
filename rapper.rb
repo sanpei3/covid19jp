@@ -101,26 +101,35 @@ md5_japan = Digest::MD5.new.update(csv).to_s
 base_values = [150]
 if (md5_japan_old != md5_japan)
   create_graph(base_values)
-  File.open(md5_japan_filename, "w") do |io|
-    io.write md5_japan
-  end
 end
 
 base_values = [150]
-if (md5_csse_global_old != md5_csse_global)
+if (md5_japan_old != md5_japan || md5_csse_global_old != md5_csse_global)
   create_graph_ww(base_values)
-  File.open(md5_csse_global_filename, "w") do |io|
-    io.write md5_csse_global
-  end
 end
 
 if (md5_japan_old != md5_japan || md5_csse_us_old != md5_csse_us)
   create_graph_CSSE(base_values)
   system("/usr/local/bin/ruby daily-graph.rb > contents/sanpei3.github.io/covid19-daily.html")
-  File.open(md5_csse_us_filename, "w") do |io|
-    io.write md5_csse_us
-  end
+end
+########################################################
+#
+# update md5 file
+#
+if (md5_japan_old != md5_japan)
   File.open(md5_japan_filename, "w") do |io|
     io.write md5_japan
+  end
+end
+
+if (md5_csse_global_old != md5_csse_global)
+  File.open(md5_csse_global_filename, "w") do |io|
+    io.write md5_csse_global
+  end
+end
+
+if (md5_csse_us_old != md5_csse_us)
+  File.open(md5_csse_us_filename, "w") do |io|
+    io.write md5_csse_us
   end
 end
