@@ -21,12 +21,16 @@ states = []
 countries = []
 
 if (states_flag)
-  states = [
-    ["Minnesota", "US"],
-#    ["New York", "US"],
-#    ["California", "US"],
-#    ["Washington", "US"]
+  states_list = [
+    "Minnesota",
+#    "New York",
+#    "California",
+#    "Washington",
   ]
+  states = {}
+  states_list.each do |p|
+    states[p] = true
+  end
 end
 if (countres_flag)
   countries = ["US", "Italy", "Spain", "Korea, South", "United Kingdom", "India", "Serbia", "Germany", "Philippines", "Turkey", "Russia", "Austria", "Japan"]
@@ -48,9 +52,9 @@ prefecture_list = ["Tokyo",
                   ]
 prefecture_list = [
   "Tokyo",
-              "Hokkaido",
-               "Kanagawa",
-              ]
+  "Kanagawa",
+  "Hokkaido",
+]
 prefectures = {}
 prefecture_list.each do |p|
   prefectures[p] = true
@@ -90,6 +94,7 @@ time_series_header = []
 max_row = 0
 max_x = 0
 max_y = 0
+start_i_j = 4
 
 start_Date = Time.now
 if (/(\d+)\/(\d\d)\/(\d\d)/ =~ start_date)
@@ -101,88 +106,49 @@ if (states_flag)
   base_count = 1
   last_day = {}
   days = {}
-  dir_name = "CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_daily_reports/"
-  Dir::foreach(dir_name) do |filename|
-    if (filename =~ /\.csv$/)
-      onedayData = {}
-      date = ""
-      CSV.foreach(dir_name + filename, "r:UTF-8") do |row|
-        /(\d\d)-(\d\d)-(\d\d\d\d).csv/.match(filename)
-        date = Date.new($3.to_i, $1.to_i, $2.to_i)
-        if (date >= start_Date - 6)
-          if (olderThan03212020(filename))
-            state = row[0]
-            country = row[1]
-            confirmed = row[3].to_i
-            if (confirmed.to_i >= base_count)
-              states.each{|s, c|
-                if (state == s && country == c)
-                  m_index = "#{s},#{c}"
-                  onedayData[m_index] = confirmed
-                end
-              }
-            end
-          else
-            county = row[1]
-            state = row[2]
-            country = row[3]
-            confirmed = row[7].to_i
-            states.each{|s, c|
-              if (state == s && country == c)
-                m_index = "#{s},#{c}"
-                # at first s, c だったら、テンポラリの合計に入れる
-                if (onedayData[m_index]  == nil)
-                  onedayData[m_index]  = confirmed
-                else
-                  onedayData[m_index]  = onedayData[m_index] + confirmed
-                end
-              end
-            }
-          end
+  CSV.foreach("time_series_covid19_confirmed_US_State.csv", "r:UTF-8") do |row|
+    if (time_series_header == [])
+      time_series_header = row
+      max_row = row.length
+      # start_dateな rowを探す
+      i = 4
+      while (row[i] != start_date)
+        i = i + 1
+      end
+      start_i_j = i
+      next
+    end
+    pref = row[0]
+    last_d = Float::INFINITY
+    if ((states[pref] &&
+         row[row.length - 1].to_i > 100) &&
+        pref != "Narita Airport")
+      #  puts pref
+      i = start_i_j
+      d_i = 0
+      while ( i < max_row)
+        d = calculate_double_days(row, i)
+        if (d == Float::INFINITY && last_d != Float::INFINITY)
+          d = last_d
+        end
+        #    puts d
+        if (m[pref] == nil)
+          m[pref] = [d, time_series_header[i]]
+        else
+          m[pref][d_i] = [d, time_series_header[i]]
+        end
+        last_d = d
+        i = i + 1
+        d_i = d_i + 1
+        if (max_x <= d_i)
+          max_x = d_i
         end
       end
-      # after March/22 check whether add to m[] or not
-      states.each{|s, c|
-        m_index = "#{s},#{c}"
-        d = date2mmdd(date)
-        if (onedayData[m_index] != nil && onedayData[m_index] >= base_count)
-          confirmed = onedayData[m_index]
-          if (last_day[m_index] == nil)
-            last_day[m_index] = 0
-            m[m_index] = []
-          else
-            last_day[m_index] = last_day[m_index] + 1
-          end
-          d_index = index2days(last_day[m_index] + 1, lang)
-          #g = [confirmed, "#{d_index}:#{d}"]
-          g = confirmed.to_i
-          days[last_day[m_index]] = "#{d_index}:#{d}"
-          m[m_index][last_day[m_index]] = g
-          if (max_x < last_day[m_index])
-            max_x = last_day[m_index]
-          end
-          if (max_y < confirmed)
-            max_y = confirmed
-          end
-        end
-      }
     end
+    # 探したところから、7日間の値を得る
   end
-  max_x = max_x - 6
-  m.each { |a|
-    i = a[1].length - 1
-    while (i >= 6)
-      m[a[0]][i] = [calculate_double_days(a[1], i), "#{days[i]}"]
-      i = i - 1
-    end
-    while (i >= 0)
-      m[a[0]].shift
-      i = i - 1
-    end
-  }
 end
 
-start_i_j = 4
 
 CSV.foreach("time_series_covid19_confirmed_Japan.csv", "r:UTF-8") do |row|
   if (time_series_header == [])
