@@ -3,8 +3,8 @@ CSV_FILE="time_series_covid19_confirmed_Japan.csv"
 WORKING_PATH=/home/sanpei/src/covid19jp
 to_address="sanpei@sanpei.org"
 COVID_CSV_FILE="COVID-19.csv"
-URL="https://dl.dropboxusercontent.com/s/6mztoeb6xf78g5w/COVID-19.csv"
-DIFF="time_series_covid19_confirmed_Japan.csv.diff"
+URL="https://dl.dropboxusercontent.com/s/6mztoeb6xf78g5w/${COVID_CSV_FILE}"
+DIFF="${CSV_FILE}.diff"
 
 CURL="/usr/local/bin/curl"
 FETCH="/usr/bin/fetch"
@@ -40,11 +40,11 @@ if [ ! -s ${CSV_FILE} ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 SIZE ZERO ERROR" ${to_address}
     exit
 fi
-${GIT} diff time_series_covid19_confirmed_Japan.csv > ${DIFF}
+${GIT} diff ${CSV_FILE} > ${DIFF}
 if [ ! -s ${DIFF} ]; then
 	exit
 fi
-${GIT} commit -uno -m "`/bin/date`" time_series_covid19_confirmed_Japan.csv COVID-19.csv
+${GIT} commit -uno -m "`/bin/date`" ${CSV_FILE} ${COVID_CSV_FILE}
 if [ $? -ne 0 ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 git commit error" ${to_address}
     exit
