@@ -2,7 +2,7 @@
 CSV_FILE="time_series_covid19_confirmed_US_State.csv"
 WORKING_PATH="/home/sanpei/src/covid19jp"
 to_address="sanpei@sanpei.org"
-COVID_CSV_DIR="${WORKING_PATH}/CSSEGISandData/COVID-19/csse_covid_19_data"
+COVID_CSV_DIR="${WORKING_PATH}/CSSEGISandData/COVID-19/csse_covid_19_data/csse_covid_19_time_series"
 COVID_CSV_FILE="time_series_covid19_confirmed_US.csv"
 DIFF="${CSV_FILE}.diff"
 
