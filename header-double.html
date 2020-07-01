@@ -13,17 +13,16 @@
       }
 </style>
 <title>
-COVID-19: Cumulative number of cases in Japan and some foreign countries by number of days since %%base_count%%th case(Semi-log graph)
+新型コロナウイルス受診都道府県毎の累積患者数の倍加日数の推移(%%DAYS%%日の移動平均、片対数グラフ)
 </title>
-
-Currently, this page is not updated automatically. Please use the <a href="covid19jp/covid19jp.html#dm=3&sd=2020-03-25&ya=Logarithmic&c=Tokyo,Kanagawa,Fukuoka,Ibaraki,Chiba,Saitama,Hokkaido,Brazil,US,Chaina,India">new page</a>.
+本ページの更新は停止しました。<a href="covid19jp/covid19jp.html#dm=0&sd=2020-03-01&c=Tokyo">新しいページ</a>をご利用ください。
 <br>
-&lt;<a href="covid19jp-%%base_count%%-WW-ja.html">JA</a> |
-EN&gt;
+&lt;JA |
+<a href="covid19jp-%%base_count%%-en.html">EN</a>&gt;
 
-&lt;<a href="covid19jp-%%base_count%%-en.html">Only Japan pref</a> |
-with foreign countries |
-<a href="covid19jp-150-US-en.html">with US states</a> | <a href="covid19-daily.html">daily new cases</a> |
+&lt;都道府県のみ |
+<a href="covid19jp-150-WW-ja.html">主要国と都道府県</a> |
+<a href="covid19jp-150-US-ja.html">アメリカ主要州と都道府県</a> | <a href="covid19-daily.html">daily new cases</a> |
 <a href="covid19jp/covid19jp.html#dm=0&sd=2020-03-01&c=Tokyo">new COVID-19 graph page</a>
 &gt;
 
@@ -38,5 +37,7 @@ google.charts.load('current', {packages: ['corechart', 'line']});
 google.charts.setOnLoadCallback(drawLineColors);
 
 function drawLineColors() {
+
+
       var data = new google.visualization.DataTable();
-      data.addColumn('number', 'X');	
+      data.addColumn('date', 'Date');
