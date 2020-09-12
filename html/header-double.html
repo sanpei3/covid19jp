@@ -1,0 +1,43 @@
+<html>
+<meta http-equiv="Refresh" content="1800">
+<meta charSet="utf-8"/>
+<meta name="viewport"
+  content="width=device-width, initial-scale=0.8, user-scalable=no">
+  <style type="text/css">
+  .full{
+      text-align:center;
+      display:block;
+      background:#FFBEDA;
+      height:40px;
+      line-height: 40px;
+      }
+</style>
+<title>
+新型コロナウイルス受診都道府県毎の累積患者数の倍加日数の推移(%%DAYS%%日の移動平均、片対数グラフ)
+</title>
+本ページの更新は停止しました。<a href="covid19jp/covid19jp.html#dm=0&sd=2020-03-01&c=Tokyo">新しいページ</a>をご利用ください。
+<br>
+&lt;JA |
+<a href="covid19jp-%%base_count%%-en.html">EN</a>&gt;
+
+&lt;都道府県のみ |
+<a href="covid19jp-150-WW-ja.html">主要国と都道府県</a> |
+<a href="covid19jp-150-US-ja.html">アメリカ主要州と都道府県</a> | <a href="covid19-daily.html">daily new cases</a> |
+<a href="covid19jp/covid19jp.html#dm=0&sd=2020-03-01&c=Tokyo">new COVID-19 graph page</a>
+&gt;
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="https://d3js.org/d3.v3.js"></script>
+
+  <div id="chart_div"></div>
+    <script type="text/javascript">
+
+google.charts.load('current', {packages: ['corechart', 'line']});
+google.charts.setOnLoadCallback(drawLineColors);
+
+function drawLineColors() {
+
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('date', 'Date');

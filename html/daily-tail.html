@@ -1,0 +1,21 @@
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myBar = new Chart(ctx, {
+				type: 'bar',
+				data: barChartData,
+				options: {
+					responsive: true,
+					legend: {
+						position: 'top',
+					},
+					title: {
+						display: true,
+						text: 'COVID-19 daily new cases'
+					}
+				}
+			});
+
+		};
+
+		var colorNames = Object.keys(window.chartColors);
