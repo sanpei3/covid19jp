@@ -44,7 +44,7 @@ ${GIT} diff ${CSV_FILE} > ${DIFF}
 if [ ! -s ${DIFF} ]; then
 	exit
 fi
-${GIT} commit -uno -m "`/bin/date`" ${CSV_FILE} ${COVID_CSV_FILE}
+${GIT} commit -uno -m "`/bin/date`" ${CSV_FILE}
 if [ $? -ne 0 ]; then
     echo update ${CSV_FILE} | ${MAIL} -s "covid19 git commit error" ${to_address}
     exit
