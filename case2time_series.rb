@@ -21,7 +21,7 @@ CSV.foreach("COVID-19.csv", "r:UTF-8") do |row|
   end
   pref = row[9]
   day = row[7]
-  if (day == nil)
+  if (day == nil || row[0] == nil)
     next
   end
   dDate = mmddyyyy2date(day)
